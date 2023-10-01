@@ -1,15 +1,20 @@
+// Importaciones
+import { useNavigate } from "react-router-dom"
 // Componente
 const EmploymentCard = ({
         company,
         employment
     }) => {
+    // Declaracion del navegador
+    const navigate = useNavigate();
+    // Retorno
     return (
         <>
             <div className="bg-white rounded-lg shadow-lg p-5 flex mx-auto my-5" style={{width:"95%"}}>
                 <div className="grid grid-cols-3 gap-2 w-full items-center">
                     <div className="flex col-span-2">
                         <img 
-                            src="/public/img/bg-registro.jpg" 
+                            src="/public/img/generic-user.png" 
                             alt="imagen-perfil" 
                             className="rounded-full w-24 h-24 border-color4 border-2 cursor-pointer" 
                             style={{width:"96px", height:"96px"}}
@@ -38,7 +43,12 @@ const EmploymentCard = ({
                         </div>
                         {/* Ver empleo */}
                         <div className="flex justify-center">
-                            <button className="bg-color3 rounded-full border-2 border-color4 text-white font-bold w-2/3 my-3 shadow uppercase mx-auto py-2 text-sm">Ver Empleo</button>
+                            <button 
+                                className="bg-color3 rounded-full border-2 border-color4 text-white font-bold w-2/3 my-3 shadow uppercase mx-auto py-2 text-sm"
+                                onClick={() => navigate(`/inicio/ver-empleo/${employment.id}`)}
+                            >
+                                Ver Empleo
+                            </button>
                         </div>
                     </div>
                 </div>

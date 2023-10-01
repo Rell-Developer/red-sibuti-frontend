@@ -49,10 +49,10 @@ const LoginForm = ({title}) => {
                     // Y se retorna la asignacion nula de la alerta para que desaparezca
                     return setTimeout(() => setAlerta(null), 5000)
                 }
-    
+
+                sessionStorage.setItem("user", JSON.stringify(data.data));
                 // Se envia al usuario a la pagina principal
                 navigate("/inicio")
-                console.log(data);
             } catch (error) {
                 console.log(error.message);
             }

@@ -30,3 +30,21 @@
     ), url("/public/img/bg-registro.jpg");
 }
 
+.bg-img-company-login{
+    /* background-image:url('/public/img/bg-login.jpg'); */
+    background-image: linear-gradient(
+        to bottom,
+        rgba(87, 204, 153, 0.3),
+        rgba(87, 204, 153, 0.3)
+    ), url("/public/img/bg-company-login.jpg");
+}
+
+.bg-img-company-register{
+    /* background-image: url('/public/img/bg-registro.jpg'); */
+    background-image: linear-gradient(
+        to bottom,
+        rgba(87, 204, 153, 0.3),
+        rgba(87, 204, 153, 0.3)
+    ), url("/public/img/bg-company-registro.jpg");
+}
+

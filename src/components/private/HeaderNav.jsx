@@ -3,15 +3,18 @@ import OptionHeader from "./OptionHeader.jsx";
 import ConfigSVG from "../public/svg/ConfigSVG.jsx"
 import BriefCaseSVG from "../public/svg/BriefCaseSVG.jsx";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import clienteAxios from "../../config/axios.jsx";
 
 // Componente del navegador
 const HeaderNav = ({height}) => {
 
     const options = [
         { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: true, link:"/inicio"},
-        { id: 2, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control" }
+        { id: 2, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control/empleos" }
     ]
 
+    const navigate = useNavigate();
     // useEffect(() => {
     //     changeSection(false);
     // },[])
@@ -41,6 +44,17 @@ const HeaderNav = ({height}) => {
 
     }
 
+    const logOut = async() => {
+        try {
+            let user = JSON.parse(sessionStorage.getItem("user"));
+            let { data } = await clienteAxios.post("/log-out",{authToken: user.authToken});
+            sessionStorage.removeItem("user");
+            navigate("/");
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
     return (
         <>
             <header className="w-full mx-auto bg-color4 shadow-lg absolute" style={{height}}>
@@ -61,7 +75,7 @@ const HeaderNav = ({height}) => {
                             <p className="text-sm text-white">Control</p>  
                         </div> */}
                     </div>
-                    <p>Salir</p>
+                    <p className="font-bold cursor-pointer" onClick={() => logOut()}>Salir</p>
                 </nav>
             </header>
             <div style={{height}}></div>

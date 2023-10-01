@@ -18,29 +18,29 @@ const MainLayout = ({section}) => {
     const [optionSelected, setOptionSelected] = useState('empleos');
 
     // UseEffect de la seccion de Usuarios
-    useEffect(() => {
-        const getUsers = async()=>{
-            try {
-                let { data } = await clienteAxios('/users');
-                const usersList = [];
+    // useEffect(() => {
+    //     const getUsers = async()=>{
+    //         try {
+    //             let { data } = await clienteAxios('/users');
+    //             const usersList = [];
 
-                for (let i = 0; i < data.length; i++) {
-                    usersList.push({
-                        id: data[i].id,
-                        email: data[i].email,
-                        password: data[i].password,
-                        // id: data[i].id,                        
-                    })
-                }
-                setUsers(usersList);
-            } catch (error) {
-                console.log(error.message);
-            }
-        }
+    //             for (let i = 0; i < data.length; i++) {
+    //                 usersList.push({
+    //                     id: data[i].id,
+    //                     email: data[i].email,
+    //                     password: data[i].password,
+    //                     // id: data[i].id,                        
+    //                 })
+    //             }
+    //             setUsers(usersList);
+    //         } catch (error) {
+    //             console.log(error.message);
+    //         }
+    //     }
 
 
-        getUsers();
-    }, [])
+    //     getUsers();
+    // }, [])
 
     const getEmployers = () =>{
         try {

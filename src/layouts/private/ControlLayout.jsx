@@ -2,17 +2,17 @@ import { Link, Outlet } from "react-router-dom"
 // Layout
 const ControlLayout = () => {
     return (
-        <section className="flex">
+        <section className="flex w-full">
             <div className="w-1/5">
                 <nav className="flex flex-col mx-auto w-5/6 my-5">
-                    <div className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all">
+                    {/* <div className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all">
                         <img src="/public/svg/users.svg" alt="usuarios" width={30}/>
                         <p className="font-bold text-white mx-2">USUARIOS</p>
-                    </div>
-                    <div className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all">
+                    </div> */}
+                    <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/empleos">
                         {/* <BriefCaseSVG fill={"#fff"}/> */}
                         <p className="font-bold text-white mx-2">EMPLEOS</p>
-                    </div>
+                    </Link>
                 </nav>
             </div>
             <div className="w-4/5 flex flex-col items-center">

@@ -11,7 +11,7 @@ import Spinner from './Spinner.jsx';
 import clienteAxios from '../../config/axios.jsx';
 
 // Componente
-const RegisterForm = ({title}) => {
+const RegisterForm = ({title, view}) => {
 
     // States
     const [email, setEmail] = useState('');
@@ -28,9 +28,13 @@ const RegisterForm = ({title}) => {
     const handleSubmit = async e =>{
         // Prevenir la accion del formulario
         e.preventDefault();
+        // Campos que se deben evaluar a toda costa
+        let inputsList = [email,password,firstName];
+        // Validacion de campos
+        view && view === "common" ? inputsList.push(lastName):null;
         // Validacion
         // Validacion de campos vacios
-        if ([email, password,firstName,lastName].includes("")) {
+        if (inputsList.includes("")) {
             setAlerta({error:true, message:"Todos los campos son obligatorios"});
             return setTimeout(() => setAlerta(null), 5000);
         }
@@ -47,8 +51,14 @@ const RegisterForm = ({title}) => {
         setTimeout(async() => {
             // try para capturar cualquier error
             try {
+                let datas = {email, password, firstName};
+                if (view && view === "common") {
+                    datas.lastName = lastName;
+                }else{
+                    datas.rol_id = "company"
+                }
                 // peticion http
-                const { data } = await clienteAxios.post("/users", { email, password, firstName, lastName });   
+                const { data } = await clienteAxios.post("/users", datas);   
                 // Quitamos el spinner
                 setLoading(false);
                 // Si existe un error, muestra el mensaje
@@ -87,30 +97,36 @@ const RegisterForm = ({title}) => {
                             {/* Input del nombre */}
                             <InputForm props={{ 
                                 classes:{
-                                    divClasses:'flex flex-col my-5 w-1/2',
+                                    divClasses:`flex flex-col my-5 ${view && view === "company"? "w-full":"w-1/2"}`,
                                     labelClasses:'font-bold text-xl',
-                                    inputClasses:'rounded-xl p-4 border-2 border-black mt-2 shadow-md w-5/6'
+                                    inputClasses:`rounded-xl p-4 border-2 border-black mt-2 shadow-md ${view && view === "company"? "w-full":"w-5/6"}`
                                 },
                                 inputType:'text',
                                 labelText:'Nombre',
                                 stateValue:firstName,
                                 setState:setFirstName,
-                                placeholder:'Ingrese su primer nombre',
+                                placeholder:`Ingrese ${view && view === "company" ? "el nombre de la empresa":"su primer nombre"}`,
                             }}/>
 
-                            {/* Input del apellido */}
-                            <InputForm props={{ 
-                                classes:{
-                                    divClasses:'flex flex-col my-5 w-1/2',
-                                    labelClasses:'font-bold text-xl',
-                                    inputClasses:'rounded-xl p-4 border-2 border-black mt-2 shadow-md'
-                                },
-                                inputType:'text',
-                                labelText:'Apellido',
-                                stateValue:lastName,
-                                setState:setLastName,
-                                placeholder:'Ingrese su primer apellido',
-                            }}/>
+                            {
+                                (!view || view === "common") && (
+                                    <>
+                                        {/* Input del apellido */}
+                                        <InputForm props={{ 
+                                            classes:{
+                                                divClasses:'flex flex-col my-5 w-1/2',
+                                                labelClasses:'font-bold text-xl',
+                                                inputClasses:'rounded-xl p-4 border-2 border-black mt-2 shadow-md'
+                                            },
+                                            inputType:'text',
+                                            labelText:'Apellido',
+                                            stateValue:lastName,
+                                            setState:setLastName,
+                                            placeholder:'Ingrese su primer apellido',
+                                        }}/>
+                                    </>
+                                )
+                            }
                         </div>
 
                         {/* Input del email */}

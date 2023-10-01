@@ -1,6 +1,24 @@
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import clienteAxios from "../../config/axios.jsx";
+import EmploymentCardControl from "../../components/private/cards/EmploymentCardControl.jsx";
 // Pagina
 const Employments = () => {
+
+    // usestates
+    const [empleos, setEmpleos] = useState([]);
+
+    // useeffect
+    useEffect(() => {
+        const searchEmployments = async() => {
+            const {data} = await clienteAxios("get-employments");
+            console.log(data);
+
+            setEmpleos(data.data);
+        }
+        searchEmployments();
+    }, [])
+    
     return (
         <>
             <div className="w-5/6 my-10">
@@ -9,63 +27,15 @@ const Employments = () => {
                 </div>
 
                 <div>
-                    <Link to="/inicio/empleos/nuevo">
+                    <Link to="/inicio/control/empleos/nuevo">
                         <button className="bg-color4 rounded shadow-lg p-2 font-bold text-white">AGREGAR NUEVO EMPLEO</button>
                     </Link>
                 </div>
 
                 <div className="grid grid-cols-12 gap-4 my-5">
-                    <div className="col-span-3 bg-white rounded shadow-lg p-5">
-                        <div>
-                            <p className="font-bold">Cargo: <span className="font-light">Secretaria</span></p>
-                            <p className="font-bold">Estatus: <span className="font-light">Abierta</span></p>
-                            <p className="font-bold">Vacantes: <span className="font-light">2</span></p>
-                            <p className="font-bold">Fecha de Creacion: <span className="font-light">01/09/2023</span></p>
-                        </div>
-                        <div className="flex flex-col my-2">
-                            <button className="uppercase bg-color4 hover:bg-color3 transition-all p-1 my-1 rounded cursor-pointer font-bold text-white">Ver DETALLES</button>
-                            <button className="uppercase bg-red-600 hover:bg-red-500 transition-all p-1 my-1 rounded cursor-pointer font-bold text-white">cerrar empleo</button>
-                        </div>
-                    </div>
-                    
-                    <div className="col-span-3 bg-white rounded shadow-lg p-5">
-                        <div>
-                            <p className="font-bold">Cargo: <span className="font-light">Secretaria</span></p>
-                            <p className="font-bold">Estatus: <span className="font-light">Abierta</span></p>
-                            <p className="font-bold">Vacantes: <span className="font-light">2</span></p>
-                            <p className="font-bold">Fecha de Creacion: <span className="font-light">01/09/2023</span></p>
-                        </div>
-                        <div className="flex flex-col my-2">
-                            <button className="uppercase bg-color4 hover:bg-color3 transition-all p-1 my-1 rounded cursor-pointer font-bold text-white">Ver DETALLES</button>
-                            <button className="uppercase bg-red-600 hover:bg-red-500 transition-all p-1 my-1 rounded cursor-pointer font-bold text-white">cerrar empleo</button>
-                        </div>
-                    </div>
-
-                    <div className="col-span-3 bg-white rounded shadow-lg p-5">
-                        <div>
-                            <p className="font-bold">Cargo: <span className="font-light">Secretaria</span></p>
-                            <p className="font-bold">Estatus: <span className="font-light">Abierta</span></p>
-                            <p className="font-bold">Vacantes: <span className="font-light">2</span></p>
-                            <p className="font-bold">Fecha de Creacion: <span className="font-light">01/09/2023</span></p>
-                        </div>
-                        <div className="flex flex-col my-2">
-                            <button className="uppercase bg-color4 hover:bg-color3 transition-all p-1 my-1 rounded cursor-pointer font-bold text-white">Ver DETALLES</button>
-                            <button className="uppercase bg-red-600 hover:bg-red-500 transition-all p-1 my-1 rounded cursor-pointer font-bold text-white">cerrar empleo</button>
-                        </div>
-                    </div>
-
-                    <div className="col-span-3 bg-white rounded shadow-lg p-5">
-                        <div>
-                            <p className="font-bold">Cargo: <span className="font-light">Secretaria</span></p>
-                            <p className="font-bold">Estatus: <span className="font-light">Abierta</span></p>
-                            <p className="font-bold">Vacantes: <span className="font-light">2</span></p>
-                            <p className="font-bold">Fecha de Creacion: <span className="font-light">01/09/2023</span></p>
-                        </div>
-                        <div className="flex flex-col my-2">
-                            <button className="uppercase bg-color4 hover:bg-color3 transition-all p-1 my-1 rounded cursor-pointer font-bold text-white">Ver DETALLES</button>
-                            <button className="uppercase bg-red-600 hover:bg-red-500 transition-all p-1 my-1 rounded cursor-pointer font-bold text-white">cerrar empleo</button>
-                        </div>
-                    </div>
+                    {
+                        empleos.map(empleo => <EmploymentCardControl employment={empleo}/>)
+                    }
                 </div>
             </div>
         </>
