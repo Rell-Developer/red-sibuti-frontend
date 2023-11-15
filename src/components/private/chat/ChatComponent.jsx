@@ -55,7 +55,7 @@ const ChatComponent = () => {
                                 </div>
                             </>
                         ):(
-                            messages.map( msg => <MessageComponent message={msg}/>)
+                            messages.map( (msg,index) => <MessageComponent key={index} message={msg}/>)
                         )
                     }
                 </div>

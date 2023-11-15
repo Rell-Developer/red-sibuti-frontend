@@ -14,7 +14,7 @@ const SecondLayout = () => {
         // console.log(JSON.parse(sessionStorage.getItem("user")));
         const searchEmployments = async () =>{
             let {data} = await clienteAxios("/get-employments");
-            console.log(data);
+            // console.log(data);
             setEmployments(data.data);
         }
 
@@ -62,7 +62,7 @@ const SecondLayout = () => {
             {/* Vista de Empleos */}
             <div className="w-full col-span-2 flex flex-col" style={{height: "91vh"}}>
                 {/* Buscador */}
-                <div className="w-full">
+                {/* <div className="w-full">
                     <div className="w-full mt-5 mx-auto bg-color4 rounded-xl shadow-lg p-5">
                         <input 
                             type="text" 
@@ -71,12 +71,13 @@ const SecondLayout = () => {
                             className="p-3 rounded-full w-full font-bold border-2 border-color2" 
                             placeholder="ESCRIBA LO QUE QUIERA BUSCAR"/>
                     </div>
-                </div>
+                </div> */}
                 {/* Resultados de los empleos*/}
                 <div className="w-full">
                     {/* Componente del empleo */}
                     {
-                        employments.map(employment => <EmploymentCard
+                        employments.map((employment,index) => <EmploymentCard
+                            key={index}
                             company={{
                                 id: employment.id,
                                 name:employment.usuario.firstName
