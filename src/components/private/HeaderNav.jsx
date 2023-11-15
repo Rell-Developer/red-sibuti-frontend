@@ -2,19 +2,43 @@
 import OptionHeader from "./OptionHeader.jsx";
 import ConfigSVG from "../public/svg/ConfigSVG.jsx"
 import BriefCaseSVG from "../public/svg/BriefCaseSVG.jsx";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import clienteAxios from "../../config/axios.jsx";
 
 // Componente del navegador
 const HeaderNav = ({height}) => {
 
-    const options = [
-        { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: true, link:"/inicio"},
-        { id: 2, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control/empleos" }
-    ]
+    const [user, setUser] = useState({});
+    const [options, setOptions] = useState([
+        { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: true, link:"/inicio"}
+    ]);
+
+    // const options = [
+    //     { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: true, link:"/inicio"},
+    //     // { id: 2, svg: ConfigSVG, title: "Control", selected: true, link:"/inicio/control/empleos"},
+    // ]
 
     const navigate = useNavigate();
+    useEffect(()=>{
+        let userJSON = JSON.parse(sessionStorage.getItem("user"));
+        
+        setUser(userJSON);
+        console.log(user);
+        if (user.rol === "company") {
+
+            let controlOption = { id: 2, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control/empleos" }
+            if (options.includes( option => option.title === controlOption.title)){
+                setOptions((state) => [...state, controlOption]);
+            }
+            // console.log(options);
+            // if (!options.includes(controlOption)) {
+            // }
+            
+            alert('se agrega la opcion de control')
+            // options.push({ id: 2, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control/empleos" })
+        }
+    }, [])
     // useEffect(() => {
     //     changeSection(false);
     // },[])
@@ -46,7 +70,6 @@ const HeaderNav = ({height}) => {
 
     const logOut = async() => {
         try {
-            let user = JSON.parse(sessionStorage.getItem("user"));
             let { data } = await clienteAxios.post("/log-out",{authToken: user.authToken});
             sessionStorage.removeItem("user");
             navigate("/");
@@ -75,7 +98,15 @@ const HeaderNav = ({height}) => {
                             <p className="text-sm text-white">Control</p>  
                         </div> */}
                     </div>
-                    <p className="font-bold cursor-pointer" onClick={() => logOut()}>Salir</p>
+                    <div className="flex items-center justify-around w-32">
+                        {/* <Link
+                            to={`/inicio/usuario/${user.id}`}
+                        >
+                            <img className="cursor-pointer" src="/public/svg/users.svg" alt="user-profile" width={30} height={30}/>
+                        </Link> */}
+                        <img className="cursor-pointer" onClick={() => navigate(`/inicio/usuario/${user.id}`)} src="/public/svg/users.svg" alt="user-profile" width={30} height={30}/>
+                        <p className="font-bold cursor-pointer" onClick={() => logOut()}>Salir</p>
+                    </div>
                 </nav>
             </header>
             <div style={{height}}></div>

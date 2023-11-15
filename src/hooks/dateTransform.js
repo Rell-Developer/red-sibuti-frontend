@@ -5,7 +5,7 @@ const dateTransform = (date) => {
             date = new Date(date);
         }
 
-        console.log(date);
+        // console.log(date);
         return date.toLocaleString();
     } catch (error) {
         console.log(error.message);

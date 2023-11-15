@@ -4,7 +4,7 @@ import dateTransform from "../../../hooks/dateTransform.js";
 const EmploymentCardControl = ({employment}) => {
     return (
         <>
-            <div className="col-span-3 bg-white rounded shadow-lg p-5">
+            <div className="col-span-full md:col-span-6 lg:col-span-3 bg-white rounded shadow-lg p-5">
                 <div>
                     <p className="font-bold">Cargo: <span className="font-light">{employment.cargo}</span></p>
                     <p className="font-bold">Estatus: <span className="font-light">{employment.status === "open" ? "Abierto":"Cerrado"}</span></p>

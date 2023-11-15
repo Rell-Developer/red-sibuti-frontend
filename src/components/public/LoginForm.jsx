@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import InputForm from './InputForm.jsx';
 import Alert from './Alert.jsx';
 import FooterLink from './FooterLink.jsx';
-import ButtonSubmit from './ButtonSubmit.jsx';
+import ButtonSubmit from './ButtonComponent.jsx';
 import Spinner from './Spinner.jsx';
 
 // Cliente Axios
@@ -52,7 +52,7 @@ const LoginForm = ({title}) => {
 
                 sessionStorage.setItem("user", JSON.stringify(data.data));
                 // Se envia al usuario a la pagina principal
-                navigate("/inicio")
+                navigate("/inicio");
             } catch (error) {
                 console.log(error.message);
             }

@@ -21,7 +21,7 @@ const EmploymentForm = () => {
     const [municipality, setMunicipality] = useState('');
     const [parish, setParish] = useState('');
 
-    const [editMode, setEditMode] = useState(false);
+    const [editMode, setEditMode] =  useState(false);
 
     const params = useParams();
     const navigate = useNavigate();
@@ -36,11 +36,11 @@ const EmploymentForm = () => {
             //     setId(params.id)
             // }
             setTimeout(async() => {
-                !params.id ? setId(0):setId(params.id)
+                !params.id ? setId(0):setId(params.id);
                 setLoading(false);
 
                 if (!isNaN(params.id)) {
-                    let { data:{data} } = await clienteAxios(`/get-employments/${params.id}`);
+                    let { data:{data} } = await clienteAxios.post(`/get-employments/${params.id}`);
                     console.log(data);
     
                     setPosition(data.position);
@@ -57,6 +57,7 @@ const EmploymentForm = () => {
         }else{
             setEditMode(true);
             setId(0);
+            setLoading(false);
         }
     }, [])
 

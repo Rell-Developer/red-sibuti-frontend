@@ -79,7 +79,7 @@ const SecondLayout = () => {
                         employments.map(employment => <EmploymentCard
                             company={{
                                 id: employment.id,
-                                name:"NOKIA"
+                                name:employment.usuario.firstName
                             }}   
                             employment={{
                                 id: employment.id,

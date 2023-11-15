@@ -1,6 +1,15 @@
-import { Link, Outlet } from "react-router-dom"
+import { Link, Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
 // Layout
 const ControlLayout = () => {
+    // States
+    const [user, setUser] = useState({});
+    // al renderizar el layout
+    useEffect(()=>{
+        let userJSON = sessionStorage.getItem('user');
+        setUser(JSON.parse(userJSON));
+    }, [])
+    // Retorno del componente
     return (
         <section className="flex w-full">
             <div className="w-1/5">
@@ -12,6 +21,14 @@ const ControlLayout = () => {
                     <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/empleos">
                         {/* <BriefCaseSVG fill={"#fff"}/> */}
                         <p className="font-bold text-white mx-2">EMPLEOS</p>
+                    </Link>
+                    <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/usuarios">
+                        {/* <BriefCaseSVG fill={"#fff"}/> */}
+                        <p className="font-bold text-white mx-2 uppercase">Usuarios</p>
+                    </Link>
+                    <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/postulaciones">
+                        {/* <BriefCaseSVG fill={"#fff"}/> */}
+                        <p className="font-bold text-white mx-2 uppercase">Postulaciones</p>
                     </Link>
                 </nav>
             </div>

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import InputForm from './InputForm.jsx';
 import Alert from './Alert.jsx';
 import FooterLink from './FooterLink.jsx';
-import ButtonSubmit from './ButtonSubmit.jsx';
+import ButtonSubmit from './ButtonComponent.jsx';
 import Spinner from './Spinner.jsx';
 
 // Cliente Axios
