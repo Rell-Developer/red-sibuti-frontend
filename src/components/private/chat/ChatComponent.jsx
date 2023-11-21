@@ -2,12 +2,20 @@
 import { useState, useEffect } from "react";
 import MessageComponent from "./MessageComponent.jsx";
 import Spinner from '../../public/Spinner.jsx';
+// Importaciones
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:3803');
 
 // Componente
 const ChatComponent = () => {
     // States
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(true);
+    const [message, setMessage] = useState('');
+    const [messagesList, setMessagesList] = useState([]);
+    const [conversationId, setConversationId] = useState(null);
+
     let messages = [
         {
             id: 1,
@@ -26,10 +34,49 @@ const ChatComponent = () => {
     ]
 
     useEffect(() => {
+        // Evento que retorna cuando el socket se conecta correctamente
+        socket.on('connect', ()=>{
+            console.log('Conectado al socket');
+    
+        });        
+        
+        socket.on('chat_message', (data)=>{
+            if (JSON.parse(sessionStorage.getItem("user")).name === data.author) {
+                data.own = true;
+            }else{
+                data.own = false;
+            }
+            console.log(data);
+            setMessagesList(messages => [...messages, data]);
+        });
+    
         setTimeout(() => {
             setLoading(false);
         }, 1000);
-    }, [])
+
+        return () =>{
+            socket.off('connect');
+            socket.off('chat_message');
+        }
+    }, []);
+
+    const sendMessage = (e) => {
+        e.preventDefault();
+        console.log(message);
+
+        if (message === '') {
+            return
+        }
+
+        socket.emit('chat_message', {
+            body: message,
+            conversationId,
+            createdAt: `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`,
+            author: JSON.parse(sessionStorage.getItem("user")).name
+        });
+
+        return setMessage('');
+    }
 
     return (
         <div className={`${open ? 'h-3/5':''} absolute bottom-0 right-0 shadow-lg w-96 flex flex-col mx-2 rounded-t-md`}>
@@ -55,14 +102,16 @@ const ChatComponent = () => {
                                 </div>
                             </>
                         ):(
-                            messages.map( (msg,index) => <MessageComponent key={index} message={msg}/>)
+                            messagesList.map( (msg,index) => <MessageComponent key={index} message={msg}/>)
                         )
                     }
                 </div>
             </div>
             <div id="footerChat" className={`bg-color4 h-16 flex items-center justify-around absolute bottom-0 w-full ${open ? '':'hidden'}`}>
-                <input type="text" className="bg-white rounded-lg p-2 w-4/6" placeholder="escriba su mensaje..."/>
-                <button>enviar</button>
+                <form onSubmit={(e)=> sendMessage(e)} className="w-5/6 flex justify-between">
+                    <input type="text" className="bg-white rounded-lg p-2 w-5/6" placeholder="escriba su mensaje..." value={message} onChange={e => setMessage(e.target.value)}/>
+                    <button type="submit">enviar</button>
+                </form>
             </div>
         </div>
     )

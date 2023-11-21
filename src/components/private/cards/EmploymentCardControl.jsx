@@ -6,7 +6,7 @@ const EmploymentCardControl = ({employment}) => {
         <>
             <div className="col-span-full md:col-span-6 lg:col-span-3 bg-white rounded shadow-lg p-5">
                 <div>
-                    <p className="font-bold">Cargo: <span className="font-light">{employment.cargo}</span></p>
+                    <p className="font-bold">Cargo: <span className="font-light">{employment.cargo.name}</span></p>
                     <p className="font-bold">Estatus: <span className="font-light">{employment.status === "open" ? "Abierto":"Cerrado"}</span></p>
                     <p className="font-bold">Vacantes: <span className="font-light">{employment.vacancies}</span></p>
                     <p className="font-bold">Fecha de Creacion: <span className="font-light">{dateTransform(employment.createdAt)}</span></p>

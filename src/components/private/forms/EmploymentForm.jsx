@@ -17,6 +17,7 @@ const EmploymentForm = () => {
     const [vacancies, setVacancies] = useState('');
     const [description, setDescription] = useState('');
     const [alerta, setAlerta] = useState(null);
+    const [positionsList, setPositionList] = useState([]);
     const [state, setState] = useState('');
     const [municipality, setMunicipality] = useState('');
     const [parish, setParish] = useState('');
@@ -51,6 +52,17 @@ const EmploymentForm = () => {
                 }
             }, 1000);
         }
+
+        const searchPosition = async() => {
+            // Buscar los cargos disponibles
+            let { data } = await clienteAxios("/get-positions");
+
+            console.log(data);
+
+            data ? setPositionList(data.data):null;
+        }
+
+        searchPosition();
 
         if(params.id){
             getId();
@@ -151,18 +163,23 @@ const EmploymentForm = () => {
                                             <form className="">
                                                 { alerta && <Alert alerta={alerta}/>}
                                                 <div className="grid grid-cols-6 my-5 gap-4">
-                                                    {/* <div className="col-span-6 lg:col-span-3 flex flex-col">
+                                                    <div className="col-span-6 lg:col-span-3 flex flex-col">
                                                         <label htmlFor="position" className="font-bold">Cargo</label>
                                                         {editMode ? (
                                                             <select name="position" id="position" className="bg-white p-3 border-2 rounded-lg" value={position} onChange={e => setPosition(e.target.value)}>
                                                                 <option value="">Seleccione un cargo</option>
-                                                                <option value="secretaria">Secretaria</option>
-                                                                <option value="obrero">Obrero</option>
+                                                                {
+                                                                    positionsList.map( (pos,index) => (
+                                                                        <>
+                                                                            <option value={pos.id}>{pos.name}</option>
+                                                                        </>
+                                                                    ))
+                                                                }
                                                             </select>
                                                         ):(
                                                             <p>{position}</p>
                                                         )}
-                                                    </div> */}
+                                                    </div>
             
                                                     <div className="col-span-6 lg:col-span-6 flex flex-col">
                                                         <label htmlFor="status" className="font-bold">Estatus</label>
