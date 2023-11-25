@@ -2,20 +2,29 @@
 import { useEffect, useState } from "react";
 import EmploymentCard from "../../components/private/EmploymentCard.jsx";
 import clienteAxios from "../../config/axios.jsx";
-
+import dateTransform from "../../hooks/dateTransform.js";
+import { Link } from "react-router-dom";
 // Layout para la seccion de empleos y servicios
 const SecondLayout = () => {
 
     const [employments, setEmployments] = useState([]);
+    const [employmentsMoreVacancies, setEmploymentsMoreVacancies] = useState([]);
     const [user, setUser] = useState({});
 
     useEffect(() => {
         setUser(JSON.parse(sessionStorage.getItem("user")));
         // console.log(JSON.parse(sessionStorage.getItem("user")));
         const searchEmployments = async () =>{
-            let {data} = await clienteAxios("/get-employments");
-            // console.log(data);
-            setEmployments(data.data);
+            if (!employments || employments.length == 0) {
+                let {data} = await clienteAxios("/get-open-employments");
+                // console.log(data);
+                setEmployments(data.data);
+            }
+
+            if (!employmentsMoreVacancies || employmentsMoreVacancies.length == 0) {
+                let { data } = await clienteAxios("/get-employments-most-vacancies");
+                setEmploymentsMoreVacancies(data.data);
+            }
         }
 
         searchEmployments();
@@ -94,7 +103,47 @@ const SecondLayout = () => {
                 </div>
             </div>
             {/* Ranking y Chat */}
-            <div className="bg-color3 w-full" style={{height: "91vh"}}>En Desarrollo</div>
+            <div className="bg-color3 w-full" style={{height: "91vh"}}>
+                <div className="m-5">
+                    <div className="">
+                        <div className="rounded shadow-lg bg-white py-5">
+                            <div>
+                                <h3 className="uppercase text-color5 font-bold text-xl text-center">empleos con más vacantes</h3>
+                            </div>
+                            <div className="flex flex-col overflow-scroll h-1/4">
+                                {
+                                    employmentsMoreVacancies.map((employment,index) => (
+                                        <Link 
+                                            className=" flex flex-col w-5/6 mx-auto rounded-lg px-5 py-1 my-2 hover:shadow transition-all hover:border"
+                                            to={`/inicio/ver-empleo/${employment.id}`}
+                                        >
+                                            <h4 className="text-lg font-bold">{employment.usuario.firstName}</h4>
+                                            <p className="text-sm">{employment.description}</p>
+                                            <em className="font-bold text-sm">{dateTransform(employment.createdAt)}</em>
+                                        </Link>
+                                    ))
+                                }
+                            </div>
+                        </div>
+                        {/* <div className="rounded shadow-lg bg-white h-1/3">
+                            <div className="py-5">
+                                <h3 className="uppercase text-color5 font-bold text-xl text-center">empleos con más vacantes</h3>
+                            </div>
+                            <div className="flex flex-col">
+                                {
+                                    employments.map((employment,index) => (
+                                        <div className=" flex flex-col w-5/6 bg-slate-200 mx-auto rounded-lg p-5 my-2">
+                                            <h4 className="text-lg">{employment.usuario.firstName}</h4>
+                                            <p>{employment.description}</p>
+                                            <em className="font-bold">{dateTransform(employment.createdAt)}</em>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div> */}
+                    </div>
+                </div>
+                En Desarrollo</div>
         </div>
     )
 }

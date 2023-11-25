@@ -1,5 +1,6 @@
 // Importaciones
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import dateTransform from "../../hooks/dateTransform.js";
 // Componente
 const EmploymentCard = ({
         company,
@@ -25,7 +26,7 @@ const EmploymentCard = ({
                             </div>
                             <div>
                                 <p className="text-sm">{employment.description}</p>
-                                <em className="text-sm font-bold text-slate-500">{employment.create_date}</em>
+                                <em className="text-sm font-bold text-slate-500">{dateTransform(employment.create_date)}</em>
                             </div>
                         </div>
                     </div>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from 'react-hook-form';
 import clienteAxios from "../../config/axios";
+import ChatListComponent from "../../components/private/chat/ChatListComponent.jsx";
 
 import ChangePassword from "../../components/private/forms/ChangePassword.jsx";
 import Spinner from "../../components/public/Spinner.jsx";
@@ -10,7 +11,7 @@ import Alert from "../../components/public/Alert.jsx"
 import VerifiedSVG from "../../components/public/svg/VerifiedSVG.jsx";
 
 // Pagina
-const Profile = () => {
+const Profile = ({setChatList, chatList}) => {
     
     const params = useParams();
     const [user, setUser] = useState({});
@@ -86,8 +87,47 @@ const Profile = () => {
     }
 
     const openChat = () => {
-        alert('En desarrollo el abrir el chat');
-        console.log('En desarrollo el abrir el chat');
+        // Verificamos si hay chats abiertos
+        if (chatList.length > 0) {
+            // Verificamos que no este en la lista de chat
+            if (!chatList.some( chat => chat.user.id === user.id)) {
+                // Agregamos la conversacion
+                setChatList( chat => [
+                    ...chat, 
+                    { 
+                        id: Date.now(),
+                        user: {
+                            ...user,
+                            fullName: `${user.firstName} ${user.lastName}`
+                        }
+                    }
+                ]);
+            }
+        }else{
+            // Agregamos la conversacion
+            setChatList( chat => [
+                ...chat, 
+                { 
+                    id: Date.now(),
+                    user: {
+                        ...user,
+                        fullName: `${user.firstName} ${user.lastName}`
+                    }
+                }
+            ]);
+        }
+
+        // Agregamos la conversacion
+                // setChatList( chat => [
+                //     ...chat, 
+                //     { 
+                //         id: Date.now(),
+                //         user: {
+                //             ...user,
+                //             fullName: `${user.firstName} ${user.lastName}`
+                //         }
+                //     }
+                // ]);
     }
 
     return (

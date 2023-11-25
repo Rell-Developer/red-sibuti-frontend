@@ -1,5 +1,6 @@
 // Importaciones
 import { Route, BrowserRouter, Routes, Outlet } from 'react-router-dom'
+import { useState } from 'react';
 import './index.css'
 
 // Join Layout
@@ -13,6 +14,8 @@ import ViewEmployment from './pages/private/ViewEmployment.jsx';
 import PostulationsList from './pages/private/PostulationsList.jsx';
 import PostulationsListAdmin from './pages/private/PostulationListAdmin.jsx';
 import Profile from './pages/private/Profile.jsx';
+import PositionsList from './pages/private/admin/PositionsList.jsx';
+import PositionForm from './components/private/forms/PositionForm.jsx';
 
 // Routes
 import EmploymentsRoutes from './routes/EmploymentsRoutes.jsx';
@@ -22,8 +25,11 @@ import EmploymentForm from './components/private/forms/EmploymentForm.jsx';
 import SecondLayout from './layouts/private/SecondLayout.jsx';
 import UsersList from './pages/private/UsersList';
 
+
 // Funcion a retornar
 function App() {
+  // Variable para la lista de chat
+  let [chatList, setChatList] = useState([]);
   return (
     <>
       <BrowserRouter>
@@ -42,10 +48,10 @@ function App() {
           </Route>
 
           {/* Rutas Privadas */}
-          <Route path='/inicio' element={<MainLayout section={'employments'}/>}>
+          <Route path='/inicio' element={<MainLayout section={'employments'} chatList={chatList} setChatList={setChatList} />}>
             {/* <Route index element={</>}/> */}
             <Route index element={<SecondLayout/>} />
-            <Route path='usuario/:id' element={<Profile/>}/>
+            <Route path='usuario/:id' element={<Profile setChatList={setChatList} chatList={chatList}/>}/>
             <Route path='ver-empleo/:id' element={<ViewEmployment/>}/>
             {/* Rutas para administradores y/o empresas */}
             <Route path='control' element={<ControlLayout/>}>
@@ -66,6 +72,12 @@ function App() {
               {/* Postulaciones */}
               <Route path='postulaciones' element={<Outlet/>}>
                 <Route index element={<PostulationsListAdmin/>}/>
+              </Route>
+              {/* Cargo */}
+              <Route path='cargos' element={<Outlet/>}>
+                <Route index element={<PositionsList/>}/>
+                <Route path=":id" element={<PositionForm/>}/>
+                <Route path="nuevo" element={<PositionForm/>}/>
               </Route>
             </Route>
           </Route>  

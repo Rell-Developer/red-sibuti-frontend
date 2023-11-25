@@ -11,7 +11,8 @@ const HeaderNav = ({height}) => {
 
     const [user, setUser] = useState({});
     const [options, setOptions] = useState([
-        { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: true, link:"/inicio"}
+        { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: true, link:"/inicio"},
+        { id: 2, svg: ConfigSVG, title: "Control", selected: true, link:"/inicio/control/empleos"},
     ]);
 
     // const options = [
@@ -84,9 +85,11 @@ const HeaderNav = ({height}) => {
                 <nav className="mx-10 my-3 flex justify-between text-white items-center">
                     <h2 className="font-bold text-2xl">RED-SIBUTI</h2>
                     <div className="flex justify-between">
-                        {
-                            options.map((option) => <OptionHeader option={option} changeSection={changeSection}/>)
-                        }
+                        <OptionHeader option={options[0]} changeSection={changeSection}/>
+                        <OptionHeader option={options[1]} changeSection={changeSection}/>
+                            {/* {
+                                options.map((option) => <OptionHeader option={option} changeSection={changeSection}/>)
+                            } */}
                         {/* <div className="flex flex-col justify-center items-center uppercase font-bold bg-white rounded-lg p-2 shadow-lg mx-2">
                             
                             <BriefCaseSVG fill={"#38A3A5"}/>

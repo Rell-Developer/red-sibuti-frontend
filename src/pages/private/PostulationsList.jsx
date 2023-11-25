@@ -28,7 +28,7 @@ const PostulationsList = () => {
                     <h2>Postulaciones</h2>
                 </div>
                 <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="col-span-3 grid grid-cols-3 gap-4 bg-white rounded shadow p-4 font-bold uppercase">
+                    <div className="col-span-4 grid grid-cols-4 gap-4 bg-white rounded shadow p-4 font-bold uppercase">
                         <div className="col-span-1">
                             <p>Nombre y Apellido</p>
                         </div>
@@ -38,6 +38,9 @@ const PostulationsList = () => {
                         <div className="col-span-1">
                             <p>Fecha de Postulación</p>
                         </div>
+                        {/* <div className="col-span-1">
+                            <p>Accion</p>
+                        </div> */}
                     </div>
                     {postulations.map( (postulation,index) => <PostulationListCard key={index} admin={false} postulation={postulation}/>)}
                 </div>

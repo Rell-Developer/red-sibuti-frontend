@@ -30,6 +30,10 @@ const ControlLayout = () => {
                         {/* <BriefCaseSVG fill={"#fff"}/> */}
                         <p className="font-bold text-white mx-2 uppercase">Postulaciones</p>
                     </Link>
+                    <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/cargos">
+                        {/* <BriefCaseSVG fill={"#fff"}/> */}
+                        <p className="font-bold text-white mx-2 uppercase">Cargos</p>
+                    </Link>
                 </nav>
             </div>
             <div className="w-4/5 flex flex-col items-center">

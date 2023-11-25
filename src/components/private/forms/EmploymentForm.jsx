@@ -44,13 +44,13 @@ const EmploymentForm = () => {
                     let { data:{data} } = await clienteAxios.post(`/get-employments/${params.id}`);
                     console.log(data);
     
-                    setPosition(data.position);
+                    setPosition(data.cargo.name);
                     setEstatus(data.status);
                     setVacancies(data.vacancies);
                     setDescription(data.description);
                     // setPosition(data.position);
                 }
-            }, 1000);
+            }, 100);
         }
 
         const searchPosition = async() => {
@@ -95,7 +95,8 @@ const EmploymentForm = () => {
         setLoading(true);
 
         try {
-            let {data} = await clienteAxios.post('/create-employment', {position, status, vacancies, description});
+            let user = JSON.parse(sessionStorage.getItem('user'));
+            let {data} = await clienteAxios.post('/create-employment', {cargoId: position.id, status, vacancies, description, usuarioId: user.id});
 
             console.log(data);
             setLoading(false)
@@ -163,10 +164,20 @@ const EmploymentForm = () => {
                                             <form className="">
                                                 { alerta && <Alert alerta={alerta}/>}
                                                 <div className="grid grid-cols-6 my-5 gap-4">
-                                                    <div className="col-span-6 lg:col-span-3 flex flex-col">
+                                                    <div className="col-span-6 lg:col-span-2 flex flex-col">
                                                         <label htmlFor="position" className="font-bold">Cargo</label>
                                                         {editMode ? (
-                                                            <select name="position" id="position" className="bg-white p-3 border-2 rounded-lg" value={position} onChange={e => setPosition(e.target.value)}>
+                                                            <select 
+                                                                id="position" 
+                                                                name="position" 
+                                                                className="bg-white p-3 border-2 rounded-lg" 
+                                                                value={position.id} 
+                                                                onChange={e => {
+                                                                    setPosition({
+                                                                        id: e.target.value,
+                                                                        name: e.target.textContent
+                                                                    });
+                                                                }}>
                                                                 <option value="">Seleccione un cargo</option>
                                                                 {
                                                                     positionsList.map( (pos,index) => (
@@ -181,7 +192,7 @@ const EmploymentForm = () => {
                                                         )}
                                                     </div>
             
-                                                    <div className="col-span-6 lg:col-span-6 flex flex-col">
+                                                    <div className="col-span-6 lg:col-span-2 flex flex-col">
                                                         <label htmlFor="status" className="font-bold">Estatus</label>
                                                         {editMode ? (
                                                             <select name="status" id="status" className="bg-white p-3 border-2 rounded-lg" value={status} onChange={e => setEstatus(e.target.value)}>
@@ -200,7 +211,7 @@ const EmploymentForm = () => {
                                                                 {/* Input de las vacantes */}
                                                                 <InputForm props={{ 
                                                                     classes:{
-                                                                        divClasses:'col-span-6 flex flex-col',
+                                                                        divClasses:'col-span-2 flex flex-col',
                                                                         labelClasses:'font-bold',
                                                                         inputClasses:'bg-white p-3 border-2 rounded-lg'
                                                                     },
@@ -213,7 +224,7 @@ const EmploymentForm = () => {
                                                             </>
                                                         ):(
                                                             <>
-                                                                <div className="col-span-6">
+                                                                <div className="col-span-2">
                                                                     <p className="font-bold">Vacantes</p>
                                                                     <p>{vacancies}</p>
                                                                 </div>
