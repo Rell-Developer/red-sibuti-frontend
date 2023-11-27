@@ -116,7 +116,9 @@ const ResetPassword = ({title}) => {
                             {/* Footer */}
                             <div className="flex flex-col my-5">
                                 <div className='w-1/2 mx-auto my-5'>
-                                    <ButtonSubmit title={"Enviar"}/>
+                                    <ButtonSubmit 
+                                        customClasses={"bg-color3 rounded-lg border-2 border-color4 text-white font-bold w-full my-3 shadow-lg uppercase mx-auto py-2 text-sm"} 
+                                        title={"Enviar"}/>
                                 </div>
                             </div>
                         </form>

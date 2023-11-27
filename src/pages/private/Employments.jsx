@@ -11,7 +11,11 @@ const Employments = () => {
     // useeffect
     useEffect(() => {
         const searchEmployments = async() => {
-            const {data} = await clienteAxios("get-employments");
+            let user = JSON.parse(sessionStorage.getItem("user")); 
+            const {data} = await clienteAxios.post("get-employments", { 
+                usuarioId: user.id,
+                all: user.rol === "company" ? false: true
+            });
             console.log(data);
 
             setEmpleos(data.data);

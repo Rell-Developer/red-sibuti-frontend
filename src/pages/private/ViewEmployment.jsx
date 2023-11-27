@@ -12,6 +12,7 @@ const ViewEmployment = () => {
     const [employment, setEmployment] = useState({});
     const [queryStatus, setQueryStatus] = useState(true);
     const [alerta, setAlerta] = useState(false);
+    const [user, setUser] = useState({});
 
     const params = useParams();
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ const ViewEmployment = () => {
         const searchEmployment = async()=>{
             try {
                 let user = JSON.parse(sessionStorage.getItem("user"));
+                setUser(user);
                 let {data} = await clienteAxios.post(`/get-employments/${params.id}`, {user_id:user.id});
                 console.log(data);
 
@@ -170,32 +172,39 @@ const ViewEmployment = () => {
                                                 cerrar
                                             </button>
                                             {
-                                                // Funcion para verificar que no eres el creador del empleo
-                                                !checkCreateEmployment() && (
+                                                // Verificar si eres un usuario comun
+                                                user.rol === "common" && (
                                                     <>
+                                                        {/* Funcion para verificar que no eres el creador del empleo */}
                                                         {
-                                                            checkVerfiedUser() ? (
+                                                            !checkCreateEmployment() && (
                                                                 <>
                                                                     {
-                                                                        employment.isPostulated ? (
+                                                                        checkVerfiedUser() ? (
+                                                                            <>
+                                                                                {
+                                                                                    employment.isPostulated ? (
+                                                                                        <>
+                                                                                            <p
+                                                                                                className="font-bold uppercase py-3 px-5 rounded-lg"
+                                                                                            >Ya te has postulado a este trabajo</p>
+                                                                                        </>
+                                                                                    ):(
+                                                                                        <button 
+                                                                                            className="rounded-lg bg-color4 text-white py-3 px-5 font-bold uppercase mx-2 shadow"
+                                                                                            onClick={() => Apply()}
+                                                                                        >postularme</button>
+                                                                                    )
+                                                                                }
+                                                                            </>
+                                                                        ):(
                                                                             <>
                                                                                 <p
                                                                                     className="font-bold uppercase py-3 px-5 rounded-lg"
-                                                                                >Ya te has postulado a este trabajo</p>
+                                                                                >Su cuenta debe estar verificada para poder postularse</p>
                                                                             </>
-                                                                        ):(
-                                                                            <button 
-                                                                                className="rounded-lg bg-color4 text-white py-3 px-5 font-bold uppercase mx-2 shadow"
-                                                                                onClick={() => Apply()}
-                                                                            >postularme</button>
                                                                         )
                                                                     }
-                                                                </>
-                                                            ):(
-                                                                <>
-                                                                    <p
-                                                                        className="font-bold uppercase py-3 px-5 rounded-lg"
-                                                                    >Su cuenta debe estar verificada para poder postularse</p>
                                                                 </>
                                                             )
                                                         }

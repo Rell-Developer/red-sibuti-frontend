@@ -1,6 +1,7 @@
 // Importaciones
 import { useNavigate } from "react-router-dom";
 import dateTransform from "../../hooks/dateTransform.js";
+import VerifiedSVG from "../public/svg/VerifiedSVG.jsx";
 // Componente
 const EmploymentCard = ({
         company,
@@ -21,8 +22,16 @@ const EmploymentCard = ({
                             style={{width:"96px", height:"96px"}}
                         />
                         <div className="mx-4 flex flex-col justify-evenly">
-                            <div>
+                            <div className="flex items-center">
                                 <h2 className="font-bold text-2xl">{company.name}</h2>
+                                {
+                                    company.verifiedToken && <VerifiedSVG 
+                                            size={30} 
+                                            color={
+                                                company.verifiedAccount ? "#57CC99":"#aaaaaa"
+                                            }
+                                        />
+                                }
                             </div>
                             <div>
                                 <p className="text-sm">{employment.description}</p>

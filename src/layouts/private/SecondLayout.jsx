@@ -3,15 +3,23 @@ import { useEffect, useState } from "react";
 import EmploymentCard from "../../components/private/EmploymentCard.jsx";
 import clienteAxios from "../../config/axios.jsx";
 import dateTransform from "../../hooks/dateTransform.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // Layout para la seccion de empleos y servicios
 const SecondLayout = () => {
 
     const [employments, setEmployments] = useState([]);
     const [employmentsMoreVacancies, setEmploymentsMoreVacancies] = useState([]);
     const [user, setUser] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
+        // Buscamos el usuario por la sesion
+        let userSession = JSON.parse(sessionStorage.getItem("user"));
+        // Si no existe, lo enviamos al login
+        if (!userSession) {
+            return navigate("/");
+        }
+        // Establecemos en el user
         setUser(JSON.parse(sessionStorage.getItem("user")));
         // console.log(JSON.parse(sessionStorage.getItem("user")));
         const searchEmployments = async () =>{
@@ -49,7 +57,7 @@ const SecondLayout = () => {
                             <div className="text-center" style={{marginTop:"60px"}}>
                                 <div className="text-white">
                                     <p className="uppercase font-bold text-lg">NOMBRE COMPLETO</p>
-                                    <p className="mt-2 text-sm">{user.name}</p>
+                                    <p className="mt-2 text-sm">{user.fullName || user.name}</p>
                                 </div>
                                 {/* <div className="text-white mt-4">
                                     <p className="uppercase font-bold text-lg">EDAD</p>
@@ -82,14 +90,16 @@ const SecondLayout = () => {
                     </div>
                 </div> */}
                 {/* Resultados de los empleos*/}
-                <div className="w-full">
+                <div className="w-full overflow-scroll">
                     {/* Componente del empleo */}
                     {
                         employments.map((employment,index) => <EmploymentCard
                             key={index}
                             company={{
                                 id: employment.id,
-                                name:employment.usuario.firstName
+                                name:employment.usuario.firstName,
+                                verifiedToken:employment.usuario.verifiedToken,
+                                verifiedAccount:employment.usuario.verifiedAccount
                             }}   
                             employment={{
                                 id: employment.id,
@@ -103,7 +113,7 @@ const SecondLayout = () => {
                 </div>
             </div>
             {/* Ranking y Chat */}
-            <div className="bg-color3 w-full" style={{height: "91vh"}}>
+            <div className="w-full" style={{height: "91vh"}}>
                 <div className="m-5">
                     <div className="">
                         <div className="rounded shadow-lg bg-white py-5">

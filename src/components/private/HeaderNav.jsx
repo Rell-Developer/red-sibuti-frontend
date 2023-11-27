@@ -85,8 +85,17 @@ const HeaderNav = ({height}) => {
                 <nav className="mx-10 my-3 flex justify-between text-white items-center">
                     <h2 className="font-bold text-2xl">RED-SIBUTI</h2>
                     <div className="flex justify-between">
+                        {/* Option de Empleos */}
                         <OptionHeader option={options[0]} changeSection={changeSection}/>
-                        <OptionHeader option={options[1]} changeSection={changeSection}/>
+                        {/* Si el usuario es admin o empresa */}
+                        {
+                            user.rol !== "common" && (
+                                <>
+                                    {/* Opcion de Control  */}
+                                    <OptionHeader option={options[1]} changeSection={changeSection}/>
+                                </>
+                            )
+                        }
                             {/* {
                                 options.map((option) => <OptionHeader option={option} changeSection={changeSection}/>)
                             } */}
