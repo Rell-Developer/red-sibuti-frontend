@@ -4,7 +4,16 @@ import Spinner from '../../public/Spinner.jsx';
 
 import InputForm from "../../public/InputForm.jsx";
 import Alert from "../../public/Alert.jsx";
-import clienteAxios from '../../../config/axios.jsx'
+import clienteAxios from '../../../config/axios.jsx';
+import DPTaxios, { DPTUserLogin } from "../../../config/DPTaxios.jsx";
+
+// Libreria para el mapa
+import { MapContainer, TileLayer, Marker, useMapEvents, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import '/public/css/custom-leaflet.css'
+// Coordenadas de caracas
+// 10.470575609172524, -66.90410224619053
+
 // Componente
 const EmploymentForm = () => {
 
@@ -18,16 +27,31 @@ const EmploymentForm = () => {
     const [description, setDescription] = useState('');
     const [alerta, setAlerta] = useState(null);
     const [positionsList, setPositionList] = useState([]);
-    const [state, setState] = useState('');
-    const [municipality, setMunicipality] = useState('');
-    const [parish, setParish] = useState('');
+
+    // Datos de ubicacion
+    const [ubication, setUbication] = useState({        // Objeto que tendra los datos de estado, municipio y parroquia
+        state:{},
+        municipality:{},
+        parish:{}
+    });     
+    const [location, setLocation] = useState(null);     // Objeto que tendra los datos de las coordenadas del lugar (latitud y longitud)
+    const [states, setStates] = useState([]);
+    const [municipalities, setMunicipalities] = useState([]);
+    const [parishes, setParishes] = useState([]);
 
     const [editMode, setEditMode] =  useState(false);
+    const [token, setToken] = useState('');
 
     const params = useParams();
     const navigate = useNavigate();
 
     useEffect(()=>{
+
+        // console.log(import.meta.env);
+        // import.meta.env.VITE_PRUEBA = 'este es de prueba';
+        // console.log(import.meta.env);
+
+
         const getId = () => {
             // console.log(params);
             // console.log(params.id);
@@ -67,6 +91,9 @@ const EmploymentForm = () => {
         if(params.id){
             getId();
         }else{
+            // Como es modo edicion o creacion, invocamos a la funcion de estructura de ubicacion
+            searchUbications()
+            // Establecemos el modo edicion
             setEditMode(true);
             setId(0);
             setLoading(false);
@@ -124,15 +151,112 @@ const EmploymentForm = () => {
         setLoading(false);
     }
 
+    const searchUbications = async () =>{
+        try {
+            let {data: {token}} = await DPTUserLogin();
+            // console.log(token);
+            setToken(token)
+            let statesDPT = await DPTaxios(`v1/listadoEntidad?token=${token}`);
+            // console.log(statesDPT.data.data);
+            let newStates = statesDPT.data.data.map(state => {
+                return {
+                    id: state.cod_entidad_ine,
+                    name: state.entidad_ine
+                }
+            });
+            setStates(newStates);
+        } catch (error) {
+            console.log('Hubo un error al buscar los estados, municipios y parroquias');
+            console.log(error.message);
+        }
+    }
+
     const viewPostulations = (e) => {
         e.preventDefault();
         // console.log("Ver postulaciones");
         navigate(`/inicio/control/empleos/postulaciones/${id}`);
     }
 
+    const LocationMarker = () => {
+
+        const map = useMapEvents({
+            // cuando hagan clic en el mapa
+            click({latlng}) {
+                // Tomamos la posicion seleccionada
+                setLocation(latlng);
+            }
+        })
+        
+        return location === null ? null : (
+            <Marker position={location}>
+                <Popup>
+                    <div className="flex flex-col">
+                        Lugar Seleccionado
+                        <em className="text-gray-500 text-sm font-bold">{location.lat},{location.lng}</em>
+                    </div>
+                </Popup>
+            </Marker>
+        )
+    }
+
+    const searchMunicipalities = async({target}) =>{
+        try {
+            // Asignamos
+            setUbication({
+                ...ubication,
+                state:{
+                    id: target.value,
+                    name: target.textContent
+                }
+            });
+
+            // Nos Logeamos para obtener el token de consulta y 
+            // let { token } = await DPTUserLogin();
+            let { data } = await DPTaxios(`v1/listadoMunicipio?token=${token}&&codEntidad=${target.value}`);
+            console.log(data);
+
+            let municips = data.data.map( m =>{
+                return {
+                    id: m.cod_municipio_ine,
+                    name: m.municipio_ine
+                }
+            });
+            setMunicipalities(municips)
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    const searchParishes = async({target}) =>{
+        try {
+            // Asignamos
+            setUbication({
+                ...ubication,
+                municipality:{
+                    id: target.value,
+                    name: target.textContent
+                }
+            });
+
+            // Nos Logeamos para obtener el token de consulta y 
+            // let { token } = await DPTUserLogin();
+            let { data } = await DPTaxios(`v1/listadoParroquia?token=${token}&&codEntidad=${ubication.municipality.id}&&codMunicipio=${target.value}`);
+            console.log(data);
+
+            let parroq = data.data.map( m =>{
+                return {
+                    id: m.cod_parroquia_ine,
+                    name: m.parroquia_ine
+                }
+            });
+            setParishes(parroq)
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
     return (
         <>  
-            <div className="bg-white p-5 rounded-lg lg:w-1/2 w-full m-5 shadow-lg">
+            <div className="bg-white p-5 rounded-lg lg:w-4/6 w-full m-5 shadow-lg h-5/6">
                 {
                     loading ? (
                         <Spinner message='Cargando...'/>
@@ -159,7 +283,7 @@ const EmploymentForm = () => {
                                     </>
                                 ):(
                                     <>
-                                        <div className=" flex flex-col text-center">
+                                        <div className="overflow-scroll flex flex-col text-center h-full">
                                             <h2 className="text-2xl font-bold">EMPLEO</h2>
                                             <form className="">
                                                 { alerta && <Alert alerta={alerta}/>}
@@ -250,6 +374,84 @@ const EmploymentForm = () => {
                                                     </div>
                                                     
                                                     <hr className="col-span-6 my-4" />
+
+                                                    <div className="flex flex-col col-span-6">
+                                                        <h3 className="text-xl font-bold">Datos de Ubicacion</h3>
+
+                                                        <div className="w-full h-full grid grid-cols-9 justify-around my-10">
+                                                            <div className="flex flex-col col-span-1 lg:col-span-3">
+                                                                Estado
+                                                                <select 
+                                                                    id="state" 
+                                                                    name="state" 
+                                                                    className="bg-white p-2 border-2 rounded-lg"
+                                                                    onChange={e => searchMunicipalities(e)}
+                                                                    value={ubication.state.id || ''}
+                                                                >
+                                                                    <option value="">Seleccione un Estado</option>
+                                                                    {states.map(state => <option value={state.id}>{state.name}</option>)}
+                                                                </select>
+                                                            </div>
+                                                            {
+                                                                municipalities.length > 0 && (
+                                                                    <div className="flex flex-col col-span-1 lg:col-span-3">
+                                                                        Municipio
+                                                                        <select 
+                                                                            id="municipality" 
+                                                                            name="municipality" 
+                                                                            className="bg-white p-2 border-2 rounded-lg" 
+                                                                            onChange={e=> searchParishes(e)}
+                                                                            value={ubication.municipality.id || ''}
+                                                                        >
+                                                                            <option value="">Seleccione un Municipio</option>
+                                                                            {municipalities.map(state => <option value={state.id}>{state.name}</option>)}
+                                                                        </select>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            {
+                                                                parishes.length > 0 && (
+                                                                    <div className="flex flex-col col-span-1 lg:col-span-3">
+                                                                        Parroquia
+                                                                        <select 
+                                                                            id="parish" 
+                                                                            name="parish" 
+                                                                            className="bg-white p-2 border-2 rounded-lg"
+                                                                            onChange={e => setUbication({
+                                                                                ...ubication,
+                                                                                parish:{
+                                                                                    id: e.target.value,
+                                                                                    name: e.target.textContent
+                                                                                }
+                                                                            })}
+                                                                            value={ubication.parish.id || ''}
+                                                                        >
+                                                                            <option value="">Seleccione una Parroquia</option>
+                                                                            {parishes.map(state => <option value={state.id}>{state.name}</option>)}
+                                                                        </select>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                        </div>
+
+                                                        <div className="w-full h-full">
+                                                            <MapContainer 
+                                                                center={{ lat:'10.470575609172524', lng:'-66.90410224619053'}} 
+                                                                zoom={6}
+                                                                scrollWheelZoom={false}
+                                                            >
+                                                                <TileLayer 
+                                                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                                                />
+                                                                {/* <Marker position={{ lat:'10.470575609172524', lng:'-64.90410224619023'}}></Marker>
+                                                                <Marker position={{ lat:'10.470575609172520', lng:'-62.90410224619053'}}></Marker>
+                                                                <Marker position={{ lat:'10.470575609172530', lng:'-62.90510234628053'}}></Marker>
+                                                                <Marker position={{ lat:'11.470575609172522', lng:'-60.90410224619053'}}></Marker> */}
+                                                                <LocationMarker/>
+                                                            </MapContainer>
+                                                        </div>
+                                                    </div>
             
                                                     {/* <div>
                                                         

@@ -85,6 +85,7 @@ const PositionForm = () => {
             setAlerta({error:false, message: infoPosition.message});
             setEditMode(false);
             setLoading(false);
+            setPosition('');
             // En 2 segundos regresamos a la lista de cargos
             setTimeout(() => {
                 setAlerta(null)

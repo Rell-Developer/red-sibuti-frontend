@@ -154,6 +154,11 @@ const ViewEmployment = () => {
                                                         <p className="font-bold">Vacantes</p>
                                                         <small>{employment.vacancies}</small>
                                                     </div>
+
+                                                    <div className="flex flex-col mx-3">
+                                                        <p className="font-bold">Postulados</p>
+                                                        <small>{employment.postulations}</small>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

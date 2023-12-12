@@ -13,12 +13,12 @@ const EmploymentCard = ({
     return (
         <>
             <div className="bg-white rounded-lg shadow-lg p-5 flex mx-auto my-5" style={{width:"95%"}}>
-                <div className="grid grid-cols-3 gap-2 w-full items-center">
+                <div className="grid grid-cols-4 gap-2 w-full items-center">
                     <div className="flex col-span-2">
                         <img 
                             src="/public/img/generic-user.png" 
                             alt="imagen-perfil" 
-                            className="rounded-full w-24 h-24 border-color4 border-2 cursor-pointer" 
+                            className="rounded-full w-24 h-24 border-color4 border-2 cursor-pointer hidden lg:flex" 
                             style={{width:"96px", height:"96px"}}
                         />
                         <div className="mx-4 flex flex-col justify-evenly">
@@ -39,7 +39,7 @@ const EmploymentCard = ({
                             </div>
                         </div>
                     </div>
-                    <div className="">
+                    <div className="col-span-2">
                         {/* Estatus y Vacantes*/}
                         <div className="flex justify-between text-center">
                             <div className="flex flex-col mx-2">
@@ -49,6 +49,10 @@ const EmploymentCard = ({
                             <div className="flex flex-col mx-2">
                                 <p className="font-bold uppercase">Vacantes</p>
                                 <p className="text-sm">{employment.vacancies}</p>
+                            </div>
+                            <div className="flex flex-col mx-2">
+                                <p className="font-bold uppercase">Postulados</p>
+                                <p className="text-sm">{employment.postulations}</p>
                             </div>
                         </div>
                         {/* Ver empleo */}

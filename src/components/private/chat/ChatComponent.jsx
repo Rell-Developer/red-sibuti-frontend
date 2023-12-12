@@ -18,23 +18,6 @@ const ChatComponent = ({chat, chatList, setChatList}) => {
     const [messagesList, setMessagesList] = useState([]);
     const [conversationId, setConversationId] = useState(null);
 
-    // let messages = [
-    //     {
-    //         id: 1,
-    //         body: 'Mensaje de julian, estoy interesado en el puesto de trabajo',
-    //         author: 'Julian Julian',
-    //         own: false,
-    //         createdAt: `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`
-    //     },
-    //     {
-    //         id: 2,
-    //         body: 'Hola julian, estamos interesados en tu perfil, por favor, pasa por la empresa para una entrevista de trabajo el dia Lunes 30 de Octubre.',
-    //         author: '',
-    //         own: true,
-    //         createdAt: `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`
-    //     }
-    // ]
-
     useEffect(() => {
         // Evento que retorna cuando el socket se conecta correctamente
         socket.on('connect', ()=>{
@@ -43,18 +26,30 @@ const ChatComponent = ({chat, chatList, setChatList}) => {
         });        
         
         socket.on('chat_message', (data)=>{
-            if (JSON.parse(sessionStorage.getItem("user")).name === data.author) {
-                data.own = true;
-            }else{
-                data.own = false;
-            }
+            let user = JSON.parse(sessionStorage.getItem("user"));
+            // if (JSON.parse(sessionStorage.getItem("user")).name === data.author) {
+            //     data.own = true;
+            // }else{
+            //     data.own = false;
+            // }
+            // console.log(data);
+            console.log("mensaje recibido del chat_message");
             console.log(data);
+            console.log(user.id);
             
             if (!conversationId && data.conversacioneId) {
                 setConversationId(data.conversacioneId);
             }
 
-            setMessagesList(messages => [...messages, data]);
+            console.log({
+                ...data,
+                own: data.usuarioId === user.id ? true: false
+            });
+
+            setMessagesList(messages => [...messages, {
+                ...data,
+                own: data.usuarioId === user.id ? true: false
+            }]);
         });
 
         if (messagesList.length == 0) {
@@ -73,16 +68,17 @@ const ChatComponent = ({chat, chatList, setChatList}) => {
 
     const searchMessages = async () =>{
         try {
-            let { data } = await clienteAxios(`/get-messages/${chat.user.id}`);
-
-            // console.log(data);
+            let { data } = await clienteAxios(`/get-messages/${chat.conversacioneId}`);
+            console.log("mensajes de searchmessages");
+            console.log(data);
+            console.log(JSON.parse(sessionStorage.getItem("user")).id);
 
             
-            if (JSON.parse(sessionStorage.getItem("user")).name === data.data.author) {
-                data.data.own = true;
-            }else{
-                data.data.own = false;
-            }
+            // if (JSON.parse(sessionStorage.getItem("user")).id === data.data.authorId) {
+            //     data.data.own = true;
+            // }else{
+            //     data.data.own = false;
+            // }
             // console.log(data.data);
             
             // data.data.forEach( msg => { 
@@ -110,7 +106,7 @@ const ChatComponent = ({chat, chatList, setChatList}) => {
         // Enviamos el mensaje al canal correspondiente
         socket.emit('chat_message', {
             body: message,
-            conversacioneId: conversationId,
+            conversacioneId: conversationId || chat.conversacioneId,
             createdAt: `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`,
             author: JSON.parse(sessionStorage.getItem("user")).name,
             usuarioId: JSON.parse(sessionStorage.getItem("user")).id,
@@ -126,12 +122,6 @@ const ChatComponent = ({chat, chatList, setChatList}) => {
         let newChatList = chatList.filter( conversation => conversation.id !== chat.id);
         // Asignamos la nueva lista de chats
         setChatList(newChatList);
-    }
-
-    // Seleccionar personal
-    const selectPersonal = () => {
-        let decision = confirm(`¿Está seguro de seleccionar como personal para el puesto a ${chat.user.fullName}?`);
-        console.log(decision);
     }
 
     return (
@@ -164,7 +154,14 @@ const ChatComponent = ({chat, chatList, setChatList}) => {
                                 </div>
                             </>
                         ):(
-                            messagesList.map( (msg,index) => <MessageComponent key={index} message={msg}/>)
+                            messagesList.map( (msg,index) => <MessageComponent 
+                                    key={index} 
+                                    message={{
+                                        ...msg,
+                                        own: (JSON.parse(sessionStorage.getItem("user")).id === msg.usuarioId || JSON.parse(sessionStorage.getItem("user")).id === msg.authorId) ? true : false,
+                                    }}
+                                />
+                            )
                         )
                     }
                 </div>

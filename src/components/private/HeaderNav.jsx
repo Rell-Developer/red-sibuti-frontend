@@ -83,7 +83,7 @@ const HeaderNav = ({height}) => {
         <>
             <header className="w-full mx-auto bg-color4 shadow-lg absolute" style={{height}}>
                 <nav className="mx-10 my-3 flex justify-between text-white items-center">
-                    <h2 className="font-bold text-2xl">RED-SIBUTI</h2>
+                    <h2 className="font-bold text-2xl cursor-pointer" onClick={() => navigate("/inicio")}>RED-SIBUTI</h2>
                     <div className="flex justify-between">
                         {/* Option de Empleos */}
                         <OptionHeader option={options[0]} changeSection={changeSection}/>

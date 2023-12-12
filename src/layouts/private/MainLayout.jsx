@@ -8,6 +8,10 @@ import ChatComponent from "../../components/private/chat/ChatComponent.jsx";
 import ChatListComponent from "../../components/private/chat/ChatListComponent.jsx";
 // Layouts
 // import SecondLayout from "./SecondLayout.jsx";
+// import { io } from 'socket.io-client';
+// import clienteAxios from "../../../config/axios.jsx";
+
+// const socket = io('http://localhost:3803');
 
 // import BriefCaseSVG from "../../components/public/svg/BriefCaseSVG.jsx";
 // Componente Layout

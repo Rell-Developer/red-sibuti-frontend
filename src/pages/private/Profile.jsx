@@ -10,6 +10,8 @@ import Spinner from "../../components/public/Spinner.jsx";
 import Alert from "../../components/public/Alert.jsx"
 import VerifiedSVG from "../../components/public/svg/VerifiedSVG.jsx";
 
+import EmploymentCard from "../../components/private/EmploymentCard.jsx";
+
 // Pagina
 const Profile = ({setChatList, chatList}) => {
     
@@ -22,6 +24,7 @@ const Profile = ({setChatList, chatList}) => {
     const [loading, setLoading] = useState(true);
     const [alerta, setAlerta] = useState(false);
     const [changePass, setChangePass] = useState(false);
+    const [employments, setEmployments] = useState([]);
 
     // Objeto en donde se guarda la configuracion general de los campos requeridos
     const objRequired = {
@@ -52,6 +55,7 @@ const Profile = ({setChatList, chatList}) => {
                 data.data.dateBirth = new Date(data.data.dateBirth);
 
                 setLoading(false);
+                searchHires();
                 return data.data
             }
             setLoading(false);
@@ -86,7 +90,18 @@ const Profile = ({setChatList, chatList}) => {
         }
     }
 
-    const openChat = () => {
+    const openChat = async() => {
+
+        let userJSON = JSON.parse(sessionStorage.getItem("user"));
+
+        // Buscamos la conversacion
+        let { data } = await clienteAxios.post("/get-conversation", {
+            usuarioId: userJSON.id,
+            toUser: user.id,
+        });
+
+        console.log(data);
+
         // Verificamos si hay chats abiertos
         if (chatList.length > 0) {
             // Verificamos que no este en la lista de chat
@@ -99,7 +114,8 @@ const Profile = ({setChatList, chatList}) => {
                         user: {
                             ...user,
                             fullName: `${user.firstName} ${user.lastName}`
-                        }
+                        },
+                        conversacioneId: data.conversacioneId ? data.conversacioneId : 0,
                     }
                 ]);
             }
@@ -111,23 +127,34 @@ const Profile = ({setChatList, chatList}) => {
                     id: Date.now(),
                     user: {
                         ...user,
-                        fullName: `${user.firstName} ${user.lastName}`
-                    }
+                        fullName: `${user.firstName} ${user.lastName}`,
+                    },
+                    conversacioneId: data.conversacioneId ? data.conversacioneId : 0,
                 }
             ]);
         }
+    }
 
-        // Agregamos la conversacion
-                // setChatList( chat => [
-                //     ...chat, 
-                //     { 
-                //         id: Date.now(),
-                //         user: {
-                //             ...user,
-                //             fullName: `${user.firstName} ${user.lastName}`
-                //         }
-                //     }
-                // ]);
+    // Buscamos las contrataciones del usuario
+    const searchHires = async () =>{
+        try {
+            let { data: { data } } = await clienteAxios(`/users/get-hires/${params.id}`);
+            
+
+
+
+            let employs = data.map( res => res['postulacione'] ? res['postulacione']['employment']: false);
+            //     if (res['postulacione']) {
+                    
+            //         return res['postulacione']['employment']
+            //     }
+            // });
+            employs = employs.filter( employ => employ !== false);
+            console.log(employs);
+            setEmployments(employs);
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
     return (
@@ -379,6 +406,35 @@ const Profile = ({setChatList, chatList}) => {
                                             </>
                                         )
                                     }
+                                </div>
+
+                                <hr />
+
+                                <div className="grid grid-cols-6">
+                                    <div className="m-5 col-span-6">
+                                        <h3 className="text-lg uppercase text-color5 font-bold">Empleos Conseguidos en RED-SIBUTI</h3>
+                                        <div>
+                                            {
+                                                employments.map((employment,index) => <EmploymentCard
+                                                    key={index}
+                                                    company={{
+                                                        id: employment.id,
+                                                        name:employment.usuario.firstName,
+                                                        verifiedToken:employment.usuario.verifiedToken,
+                                                        verifiedAccount:employment.usuario.verifiedAccount
+                                                    }}   
+                                                    employment={{
+                                                        id: employment.id,
+                                                        description: employment.description,
+                                                        create_date: employment.createdAt,
+                                                        status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
+                                                        vacancies:employment.vacancies,
+                                                        postulations:employment.postulations
+                                                    }}
+                                                />)
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </>
                         )

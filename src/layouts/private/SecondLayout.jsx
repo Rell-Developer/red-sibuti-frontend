@@ -5,11 +5,12 @@ import clienteAxios from "../../config/axios.jsx";
 import dateTransform from "../../hooks/dateTransform.js";
 import { Link, useNavigate } from "react-router-dom";
 // Layout para la seccion de empleos y servicios
-const SecondLayout = () => {
+const SecondLayout = ({chatList, setChatList}) => {
 
     const [employments, setEmployments] = useState([]);
     const [employmentsMoreVacancies, setEmploymentsMoreVacancies] = useState([]);
     const [user, setUser] = useState({});
+    const [conversationList, setConversationList] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,11 +35,70 @@ const SecondLayout = () => {
                 setEmploymentsMoreVacancies(data.data);
             }
         }
+        // Funcion para buscar las conversaciones
+        const searchConversations = async () => {
+            try {
+                console.log("Vamos a buscar las conversaciones");
+                console.log(user);
+                const { data } = await clienteAxios(`/get-conversations/${user.id || JSON.parse(sessionStorage.getItem("user")).id}`);
+                setConversationList(data.data)
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
 
-        searchEmployments();
+        const main = async () => {
+            await searchEmployments();
+            searchConversations();
+        }
+
+        main();
     }, [])
     
-    
+    const openConversation = async(otherUser) => {
+        let userJSON = JSON.parse(sessionStorage.getItem("user"));
+
+        // Buscamos la conversacion
+        let { data } = await clienteAxios.post("/get-conversation", {
+            usuarioId: userJSON.id,
+            toUser: otherUser.id,
+        });
+
+        console.log(data);
+
+        // Verificamos si hay chats abiertos
+        if (chatList.length > 0) {
+            // Verificamos que no este en la lista de chat
+            if (!chatList.some( chat => chat.otherUser.id === otherUser.id)) {
+                // Agregamos la conversacion
+                setChatList( chat => [
+                    ...chat, 
+                    { 
+                        id: Date.now(),
+                        user: {
+                            ...otherUser,
+                            fullName: otherUser.name,
+                        },
+                        conversacioneId: data.conversacioneId ? data.conversacioneId : 0,
+                    }
+                ]);
+            }
+        }else{
+            // Agregamos la conversacion
+            setChatList( chat => [
+                ...chat, 
+                { 
+                    id: Date.now(),
+                    user: {
+                        ...otherUser,
+                        fullName: otherUser.name,
+                    },
+                    conversacioneId: data.conversacioneId ? data.conversacioneId : 0,
+                }
+            ]);
+        }
+    }
+
     return (
         <div className="w-full grid grid-cols-4 gap-4 mx-auto">
             {/* <div className="bg-gray-900 bg-opacity-50 absolute z-10 w-full h-screen flex justify-center items-center">
@@ -106,7 +166,8 @@ const SecondLayout = () => {
                                 description: employment.description,
                                 create_date: employment.createdAt,
                                 status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
-                                vacancies:employment.vacancies
+                                vacancies:employment.vacancies,
+                                postulations:employment.postulations
                             }}
                         />)
                     }
@@ -116,7 +177,7 @@ const SecondLayout = () => {
             <div className="w-full" style={{height: "91vh"}}>
                 <div className="m-5">
                     <div className="">
-                        <div className="rounded shadow-lg bg-white py-5">
+                        <div className="rounded shadow-lg bg-white py-5 my-5">
                             <div>
                                 <h3 className="uppercase text-color5 font-bold text-xl text-center">empleos con más vacantes</h3>
                             </div>
@@ -135,25 +196,38 @@ const SecondLayout = () => {
                                 }
                             </div>
                         </div>
-                        {/* <div className="rounded shadow-lg bg-white h-1/3">
-                            <div className="py-5">
-                                <h3 className="uppercase text-color5 font-bold text-xl text-center">empleos con más vacantes</h3>
+                        <div className="rounded shadow-lg bg-white py-5 my-5">
+                            <div>
+                                <h3 className="uppercase text-color5 font-bold text-xl text-center">conversaciones</h3>
                             </div>
-                            <div className="flex flex-col">
+                            <div className="flex flex-col overflow-scroll h-1/4">
                                 {
-                                    employments.map((employment,index) => (
-                                        <div className=" flex flex-col w-5/6 bg-slate-200 mx-auto rounded-lg p-5 my-2">
-                                            <h4 className="text-lg">{employment.usuario.firstName}</h4>
-                                            <p>{employment.description}</p>
-                                            <em className="font-bold">{dateTransform(employment.createdAt)}</em>
-                                        </div>
-                                    ))
+                                    conversationList && conversationList.length > 0 ? (
+                                        <>
+                                            {
+                                                conversationList.map((conversation,index) => (
+                                                    <div 
+                                                        className=" flex flex-col w-5/6 mx-auto rounded-lg px-5 p-2 my-2 hover:shadow transition-all hover:border cursor-pointer"
+                                                        onClick={() => openConversation(conversation.otherUser)}
+                                                    >
+                                                        <h4 className="text-lg font-bold">{conversation.otherUser.name}</h4>
+                                                    </div>
+                                                ))
+                                            }
+                                        </>
+                                    ):(
+                                        <>
+                                            <h4 className="mx-auto my-5">
+                                                Aun no tiene conversaciones
+                                            </h4>
+                                        </>
+                                    )
                                 }
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
-                En Desarrollo</div>
+            </div>
         </div>
     )
 }

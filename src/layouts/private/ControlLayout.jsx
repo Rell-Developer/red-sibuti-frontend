@@ -11,7 +11,7 @@ const ControlLayout = () => {
     }, [])
     // Retorno del componente
     return (
-        <section className="flex w-full">
+        <section className="flex w-full h-full">
             <div className="w-1/5">
                 <nav className="flex flex-col mx-auto w-5/6 my-5">
                     {/* <div className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all">
