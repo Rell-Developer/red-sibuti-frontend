@@ -167,7 +167,10 @@ const SecondLayout = ({chatList, setChatList}) => {
                                 create_date: employment.createdAt,
                                 status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
                                 vacancies:employment.vacancies,
-                                postulations:employment.postulations
+                                postulations:employment.postulations,
+                                state_name: employment.state_name,
+                                municipality_name: employment.municipality_name,
+                                parish_name: employment.parish_name,
                             }}
                         />)
                     }

@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import Spinner from "../../components/public/Spinner.jsx";
 import clienteAxios from "../../config/axios.jsx";
 import Alert from "../../components/public/Alert.jsx";
+// Mapa
+import Map from "../../components/public/map/Map.jsx";
 // Pagina
 const ViewEmployment = () => {
     // States
@@ -105,7 +107,7 @@ const ViewEmployment = () => {
     return (
         <>
             <div className="w-full h-full flex justify-center py-5">
-                <div className={`${!loading || queryStatus? "justify-around":"justify-center"} w-1/2 h-1/2 bg-white rounded-lg shadow-lg flex flex-col p-10`}>
+                <div className={`${!loading || queryStatus? "justify-around":"justify-center"} w-2/3 h-full bg-white rounded-lg shadow-lg flex flex-col p-10 overflow-scroll`}>
                     {alerta && <Alert alerta={alerta}/>}
                     {loading ? (
                         <Spinner/>
@@ -137,6 +139,15 @@ const ViewEmployment = () => {
                                                         <h3 className="text-3xl font-bold">{employment.usuario.firstName}</h3>
                                                         {/* ubicacion */}
                                                         {/* <p className="text-sm">San Juan de los Morros, Guarico, Venezuela</p> */}
+                                                        <small className="text-sm text-gray-800">
+                                                            { employment.parish_name ? 
+                                                                employment.parish_name !== "" ? 
+                                                                    employment.parish_name: employment.municipality_name
+                                                                : employment.municipality_name
+                                                            }, 
+                                                            {employment.municipality_name}, 
+                                                            {employment.state_name}
+                                                        </small>
                                                     </div>
                                                 </div>
                                                 {/* <div className="col-span-4 flex flex-col justify-center">
@@ -162,14 +173,24 @@ const ViewEmployment = () => {
                                                 </div>
                                             </div>
                                         </div>
+
                                         {/* Mas Informacion del trabajo */}
-                                        <div className="w-full my-2 p-3 overflow-scroll px-5">
-                                            <p>
-                                                {employment.description}
-                                            </p>
+                                        <div className="overflow-scroll">
+                                            <div className="w-full my-2 p-3 px-5">
+                                                <p>
+                                                    {employment.description}
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <Map editMode={false} position={{
+                                                    lat: employment.lat, lng: employment.lng
+                                                }}></Map>
+                                            </div>
                                         </div>
+
                                         {/* Acciones */}
-                                        <div className="w-100 flex justify-between">
+                                        <div className="w-100 flex justify-between mt-3">
                                             <button 
                                                 className="rounded-lg bg-color6 text-white py-3 px-5 font-bold uppercase mx-2 shadow"
                                                 onClick={()=>navigate("/inicio")}

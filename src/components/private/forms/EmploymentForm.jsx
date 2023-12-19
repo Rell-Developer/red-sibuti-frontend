@@ -72,7 +72,15 @@ const EmploymentForm = () => {
                     setEstatus(data.status);
                     setVacancies(data.vacancies);
                     setDescription(data.description);
-                    // setPosition(data.position);
+                    setLocation({ lat:data.lat, lng: data.lng})
+                    setUbication({
+                        state_name: data.state_name,
+                        municipality_name: data.municipality_name,
+                        parish_name: data.parish_name,
+                        state_id: data.state_id,
+                        municipality_id: data.municipality_id,
+                        parish_id: data.parish_id,
+                    })
                 }
             }, 100);
         }
@@ -118,12 +126,17 @@ const EmploymentForm = () => {
             return setTimeout(() => setAlerta(null), 5000);
         }
 
+        if (!location) {
+            setAlerta({ error: true, message:'Debe seleccionar la ubicacion del empleo u oficina.' });
+            return setTimeout(() => setAlerta(null), 5000);
+        }
+
         // Colocando la animacion del spinner
         setLoading(true);
 
         try {
             let user = JSON.parse(sessionStorage.getItem('user'));
-            let {data} = await clienteAxios.post('/create-employment', {cargoId: position.id, status, vacancies, description, usuarioId: user.id});
+            let {data} = await clienteAxios.post('/create-employment', {cargoId: position.id, status, vacancies, description, usuarioId: user.id, location, ubication});
 
             console.log(data);
             setLoading(false)
@@ -182,8 +195,10 @@ const EmploymentForm = () => {
         const map = useMapEvents({
             // cuando hagan clic en el mapa
             click({latlng}) {
-                // Tomamos la posicion seleccionada
-                setLocation(latlng);
+                if (editMode) {
+                    // Tomamos la posicion seleccionada
+                    setLocation(latlng);
+                }
             }
         })
         
@@ -204,11 +219,11 @@ const EmploymentForm = () => {
             // Asignamos
             setUbication({
                 ...ubication,
-                state:{
-                    id: target.value,
-                    name: target.textContent
-                }
+                state_id: target.value,
+                state_name: target.selectedOptions[0].textContent
             });
+
+            console.log(target);
 
             // Nos Logeamos para obtener el token de consulta y 
             // let { token } = await DPTUserLogin();
@@ -232,16 +247,14 @@ const EmploymentForm = () => {
             // Asignamos
             setUbication({
                 ...ubication,
-                municipality:{
-                    id: target.value,
-                    name: target.textContent
-                }
+                municipality_id: target.value,
+                municipality_name: target.selectedOptions[0].textContent
             });
 
             // Nos Logeamos para obtener el token de consulta y 
             // let { token } = await DPTUserLogin();
-            let { data } = await DPTaxios(`v1/listadoParroquia?token=${token}&&codEntidad=${ubication.municipality.id}&&codMunicipio=${target.value}`);
-            console.log(data);
+            let { data } = await DPTaxios(`v1/listadoParroquia?token=${token}&&codEntidad=${ubication.municipality_id}&&codMunicipio=${target.value}`);
+            // console.log(data);
 
             let parroq = data.data.map( m =>{
                 return {
@@ -378,60 +391,91 @@ const EmploymentForm = () => {
                                                     <div className="flex flex-col col-span-6">
                                                         <h3 className="text-xl font-bold">Datos de Ubicacion</h3>
 
-                                                        <div className="w-full h-full grid grid-cols-9 justify-around my-10">
+                                                        <div className="w-full h-full grid grid-cols-9 justify-around my-5">
                                                             <div className="flex flex-col col-span-1 lg:col-span-3">
-                                                                Estado
-                                                                <select 
-                                                                    id="state" 
-                                                                    name="state" 
-                                                                    className="bg-white p-2 border-2 rounded-lg"
-                                                                    onChange={e => searchMunicipalities(e)}
-                                                                    value={ubication.state.id || ''}
-                                                                >
-                                                                    <option value="">Seleccione un Estado</option>
-                                                                    {states.map(state => <option value={state.id}>{state.name}</option>)}
-                                                                </select>
-                                                            </div>
-                                                            {
-                                                                municipalities.length > 0 && (
-                                                                    <div className="flex flex-col col-span-1 lg:col-span-3">
-                                                                        Municipio
+                                                                <p className="font-bold">Estado</p>
+                                                                {
+                                                                    !editMode ? (
+                                                                        <p>{ubication.state_name}</p>
+                                                                    ):(
                                                                         <select 
-                                                                            id="municipality" 
-                                                                            name="municipality" 
-                                                                            className="bg-white p-2 border-2 rounded-lg" 
-                                                                            onChange={e=> searchParishes(e)}
-                                                                            value={ubication.municipality.id || ''}
-                                                                        >
-                                                                            <option value="">Seleccione un Municipio</option>
-                                                                            {municipalities.map(state => <option value={state.id}>{state.name}</option>)}
-                                                                        </select>
-                                                                    </div>
-                                                                )
-                                                            }
-                                                            {
-                                                                parishes.length > 0 && (
-                                                                    <div className="flex flex-col col-span-1 lg:col-span-3">
-                                                                        Parroquia
-                                                                        <select 
-                                                                            id="parish" 
-                                                                            name="parish" 
+                                                                            id="state" 
+                                                                            name="state" 
                                                                             className="bg-white p-2 border-2 rounded-lg"
-                                                                            onChange={e => setUbication({
-                                                                                ...ubication,
-                                                                                parish:{
-                                                                                    id: e.target.value,
-                                                                                    name: e.target.textContent
-                                                                                }
-                                                                            })}
-                                                                            value={ubication.parish.id || ''}
+                                                                            onChange={e => searchMunicipalities(e)}
+                                                                            value={ubication.state_id || ''}
                                                                         >
-                                                                            <option value="">Seleccione una Parroquia</option>
-                                                                            {parishes.map(state => <option value={state.id}>{state.name}</option>)}
+                                                                            <option value="">Seleccione un Estado</option>
+                                                                            {states.map(state => <option value={state.id}>{state.name}</option>)}
                                                                         </select>
-                                                                    </div>
-                                                                )
-                                                            }
+                                                                    )
+                                                                }
+                                                            </div>
+                                                            <div className="flex flex-col col-span-1 lg:col-span-3">
+                                                                <p className="font-bold">
+                                                                    Municipio
+                                                                </p>
+                                                                {
+                                                                    !editMode ? (
+                                                                        <p>{ubication.municipality_name}</p>
+                                                                    ):(
+                                                                        <>
+                                                                            {
+                                                                                municipalities.length > 0 && (
+                                                                                        <select 
+                                                                                            id="municipality" 
+                                                                                            name="municipality" 
+                                                                                            className="bg-white p-2 border-2 rounded-lg" 
+                                                                                            onChange={e=> searchParishes(e)}
+                                                                                            value={ubication.municipality_id || ''}
+                                                                                        >
+                                                                                            <option value="">Seleccione un Municipio</option>
+                                                                                            {municipalities.map(state => <option value={state.id}>{state.name}</option>)}
+                                                                                        </select>
+                                                                                )
+                                                                            }
+                                                                        </>
+                                                                    )
+                                                                }
+                                                            </div>
+                                                            <div className="flex flex-col col-span-1 lg:col-span-3">
+                                                                <p className="font-bold">
+                                                                    Parroquia
+                                                                </p>
+                                                                {
+                                                                    !editMode ? (
+                                                                        <p>{
+                                                                            ubication.parish_name ? 
+                                                                                ubication.parish_name !== "" ? 
+                                                                                    ubication.parish_name : ubication.municipality_name 
+                                                                                : 
+                                                                                ubication.municipality_name
+                                                                            }
+                                                                        </p>
+                                                                    ):(
+                                                                        <>
+                                                                            {
+                                                                                parishes.length > 0 && (
+                                                                                        <select 
+                                                                                            id="parish" 
+                                                                                            name="parish" 
+                                                                                            className="bg-white p-2 border-2 rounded-lg"
+                                                                                            onChange={e => setUbication({
+                                                                                                ...ubication,
+                                                                                                parish_id: e.target.value,
+                                                                                                parish_name: e.target.selectedOptions[0].textContent
+                                                                                            })}
+                                                                                            value={ubication.parish_id || ''}
+                                                                                        >
+                                                                                            <option value="">Seleccione una Parroquia</option>
+                                                                                            {parishes.map(state => <option value={state.id}>{state.name}</option>)}
+                                                                                        </select>
+                                                                                )
+                                                                            }
+                                                                        </>
+                                                                    )
+                                                                }
+                                                            </div>
                                                         </div>
 
                                                         <div className="w-full h-full">
@@ -444,48 +488,10 @@ const EmploymentForm = () => {
                                                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                                                 />
-                                                                {/* <Marker position={{ lat:'10.470575609172524', lng:'-64.90410224619023'}}></Marker>
-                                                                <Marker position={{ lat:'10.470575609172520', lng:'-62.90410224619053'}}></Marker>
-                                                                <Marker position={{ lat:'10.470575609172530', lng:'-62.90510234628053'}}></Marker>
-                                                                <Marker position={{ lat:'11.470575609172522', lng:'-60.90410224619053'}}></Marker> */}
                                                                 <LocationMarker/>
                                                             </MapContainer>
                                                         </div>
                                                     </div>
-            
-                                                    {/* <div>
-                                                        
-                                                    </div> */}
-                                                    {/* <h3 className="font-bold text-xl col-span-6">UBICACION</h3>
-            
-                                                    <div className="col-span-6 grid grid-cols-6 gap-4">
-                                                        <div className="col-span-6 lg:col-span-2 flex flex-col">
-                                                            <label htmlFor="status" className="font-bold">Estado</label>
-                                                            <select name="status" id="status" className="bg-white p-3 border-2 rounded-lg" value={state} onChange={e => setState(e.target.value)}>
-                                                                <option value="">Seleccione un estado</option>
-                                                                <option value="open">Abierto</option>
-                                                                <option value="closed">Cerrado</option>
-                                                            </select>
-                                                        </div>
-            
-                                                        <div className="col-span-6 lg:col-span-2 flex flex-col">
-                                                            <label htmlFor="status" className="font-bold">Municipio</label>
-                                                            <select name="status" id="status" className="bg-white p-3 border-2 rounded-lg" value={municipality} onChange={e => setMunicipality(e.target.value)}>
-                                                                <option value="">Seleccione un municipio</option>
-                                                                <option value="open">Abierto</option>
-                                                                <option value="closed">Cerrado</option>
-                                                            </select>
-                                                        </div>
-            
-                                                        <div className="col-span-6 lg:col-span-2 flex flex-col">
-                                                            <label htmlFor="status" className="font-bold">Parroquia</label>
-                                                            <select name="status" id="status" className="bg-white p-3 border-2 rounded-lg" value={parish} onChange={e => setParish(e.target.value)}>
-                                                                <option value="">Seleccione una parroquia</option>
-                                                                <option value="open">Abierto</option>
-                                                                <option value="closed">Cerrado</option>
-                                                            </select>
-                                                        </div>
-                                                    </div> */}
                                                 </div>
                                                     
                                                 {editMode ? (

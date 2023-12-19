@@ -33,8 +33,17 @@ const EmploymentCard = ({
                                         />
                                 }
                             </div>
-                            <div>
+                            <div className="flex flex-col">
                                 <p className="text-sm">{employment.description}</p>
+                                <small className="text-gray-800" style={{fontSize: "11px"}}>
+                                    { employment.parish_name ? 
+                                        employment.parish_name !== "" ? 
+                                            employment.parish_name: employment.municipality_name
+                                        : employment.municipality_name
+                                    }, 
+                                    {employment.municipality_name}, 
+                                    {employment.state_name}
+                                </small>
                                 <em className="text-sm font-bold text-slate-500">{dateTransform(employment.create_date)}</em>
                             </div>
                         </div>
