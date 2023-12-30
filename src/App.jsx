@@ -24,7 +24,8 @@ import EmploymentsRoutes from './routes/EmploymentsRoutes.jsx';
 import EmploymentForm from './components/private/forms/EmploymentForm.jsx';
 import SecondLayout from './layouts/private/SecondLayout.jsx';
 import UsersList from './pages/private/UsersList';
-
+import OpenEmploymentsList from './components/private/lists/OpenEmploymentsList.jsx';
+import ActiveServicesList from './components/private/lists/ActiveServicesList.jsx';
 
 // Funcion a retornar
 function App() {
@@ -50,7 +51,10 @@ function App() {
           {/* Rutas Privadas */}
           <Route path='/inicio' element={<MainLayout section={'employments'} chatList={chatList} setChatList={setChatList} />}>
             {/* <Route index element={</>}/> */}
-            <Route index element={<SecondLayout chatList={chatList} setChatList={setChatList} />} />
+            <Route path='' element={<SecondLayout chatList={chatList} setChatList={setChatList} />} >
+              <Route index element={<OpenEmploymentsList/>}/>
+              <Route path='servicios' element={<ActiveServicesList/>}/>
+            </Route>
             <Route path='usuario/:id' element={<Profile setChatList={setChatList} chatList={chatList}/>}/>
             <Route path='ver-empleo/:id' element={<ViewEmployment/>}/>
             {/* Rutas para administradores y/o empresas */}

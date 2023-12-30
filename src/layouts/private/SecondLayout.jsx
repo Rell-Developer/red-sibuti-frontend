@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import EmploymentCard from "../../components/private/EmploymentCard.jsx";
 import clienteAxios from "../../config/axios.jsx";
 import dateTransform from "../../hooks/dateTransform.js";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Outlet } from "react-router-dom";
 // Layout para la seccion de empleos y servicios
 const SecondLayout = ({chatList, setChatList}) => {
 
@@ -24,11 +24,11 @@ const SecondLayout = ({chatList, setChatList}) => {
         setUser(JSON.parse(sessionStorage.getItem("user")));
         // console.log(JSON.parse(sessionStorage.getItem("user")));
         const searchEmployments = async () =>{
-            if (!employments || employments.length == 0) {
-                let {data} = await clienteAxios("/get-open-employments");
-                // console.log(data);
-                setEmployments(data.data);
-            }
+            // if (!employments || employments.length == 0) {
+            //     let {data} = await clienteAxios("/get-open-employments");
+            //     // console.log(data);
+            //     setEmployments(data.data);
+            // }
 
             if (!employmentsMoreVacancies || employmentsMoreVacancies.length == 0) {
                 let { data } = await clienteAxios("/get-employments-most-vacancies");
@@ -101,11 +101,6 @@ const SecondLayout = ({chatList, setChatList}) => {
 
     return (
         <div className="w-full grid grid-cols-4 gap-4 mx-auto">
-            {/* <div className="bg-gray-900 bg-opacity-50 absolute z-10 w-full h-screen flex justify-center items-center">
-                <div className="text-white bg-white w-1/2 h-1/2 rounded-lg">
-                    modal
-                </div>
-            </div> */}
             {/* Vista Previa del Usuario */}
             <div className="w-full" style={{height: "91vh"}}>
                 <div className="bg-white rounded-lg border-2 border-color3 w-5/6 mx-auto mt-5 p-4 shadow-lg">
@@ -136,46 +131,7 @@ const SecondLayout = ({chatList, setChatList}) => {
                     </div>
                 </div>
             </div>
-            {/* Vista de Empleos */}
-            <div className="w-full col-span-2 flex flex-col" style={{height: "91vh"}}>
-                {/* Buscador */}
-                {/* <div className="w-full">
-                    <div className="w-full mt-5 mx-auto bg-color4 rounded-xl shadow-lg p-5">
-                        <input 
-                            type="text" 
-                            name="" 
-                            id="" 
-                            className="p-3 rounded-full w-full font-bold border-2 border-color2" 
-                            placeholder="ESCRIBA LO QUE QUIERA BUSCAR"/>
-                    </div>
-                </div> */}
-                {/* Resultados de los empleos*/}
-                <div className="w-full overflow-scroll">
-                    {/* Componente del empleo */}
-                    {
-                        employments.map((employment,index) => <EmploymentCard
-                            key={index}
-                            company={{
-                                id: employment.id,
-                                name:employment.usuario.firstName,
-                                verifiedToken:employment.usuario.verifiedToken,
-                                verifiedAccount:employment.usuario.verifiedAccount
-                            }}   
-                            employment={{
-                                id: employment.id,
-                                description: employment.description,
-                                create_date: employment.createdAt,
-                                status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
-                                vacancies:employment.vacancies,
-                                postulations:employment.postulations,
-                                state_name: employment.state_name,
-                                municipality_name: employment.municipality_name,
-                                parish_name: employment.parish_name,
-                            }}
-                        />)
-                    }
-                </div>
-            </div>
+            <Outlet/>
             {/* Ranking y Chat */}
             <div className="w-full" style={{height: "91vh"}}>
                 <div className="m-5">

@@ -11,6 +11,7 @@ import Alert from "../../components/public/Alert.jsx"
 import VerifiedSVG from "../../components/public/svg/VerifiedSVG.jsx";
 
 import EmploymentCard from "../../components/private/EmploymentCard.jsx";
+import ServicesList from "../../components/private/lists/ServicesList.jsx";
 
 // Pagina
 const Profile = ({setChatList, chatList}) => {
@@ -410,6 +411,16 @@ const Profile = ({setChatList, chatList}) => {
 
                                 <hr />
 
+                                {/* Servicios */}
+                                {
+                                    user.verifiedToken && user.verifiedAccount && (
+                                        <ServicesList user={user}/>
+                                    )
+                                }
+
+                                <hr />
+
+                                {/* Empleos conseguidos */}
                                 <div className="grid grid-cols-6">
                                     <div className="m-5 col-span-6">
                                         <h3 className="text-lg uppercase text-color5 font-bold">Empleos Conseguidos en RED-SIBUTI</h3>

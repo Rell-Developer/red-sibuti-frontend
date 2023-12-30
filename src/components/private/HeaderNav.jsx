@@ -2,6 +2,7 @@
 import OptionHeader from "./OptionHeader.jsx";
 import ConfigSVG from "../public/svg/ConfigSVG.jsx"
 import BriefCaseSVG from "../public/svg/BriefCaseSVG.jsx";
+import ServiceSVG from "../public/svg/ServiceSVG.jsx";
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import clienteAxios from "../../config/axios.jsx";
@@ -12,13 +13,9 @@ const HeaderNav = ({height}) => {
     const [user, setUser] = useState({});
     const [options, setOptions] = useState([
         { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: true, link:"/inicio"},
-        { id: 2, svg: ConfigSVG, title: "Control", selected: true, link:"/inicio/control/empleos"},
+        { id: 2, svg: ServiceSVG, title: "Servicios", selected: true, link:"/inicio/servicios"},
+        { id: 3, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control/empleos" }
     ]);
-
-    // const options = [
-    //     { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: true, link:"/inicio"},
-    //     // { id: 2, svg: ConfigSVG, title: "Control", selected: true, link:"/inicio/control/empleos"},
-    // ]
 
     const navigate = useNavigate();
     useEffect(()=>{
@@ -28,10 +25,10 @@ const HeaderNav = ({height}) => {
         console.log(user);
         if (user.rol === "company") {
 
-            let controlOption = { id: 2, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control/empleos" }
-            if (options.includes( option => option.title === controlOption.title)){
-                setOptions((state) => [...state, controlOption]);
-            }
+            // let controlOption = { id: 2, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control/empleos" }
+            // if (options.includes( option => option.title === controlOption.title)){
+            //     setOptions((state) => [...state, controlOption]);
+            // }
             // console.log(options);
             // if (!options.includes(controlOption)) {
             // }
@@ -87,12 +84,13 @@ const HeaderNav = ({height}) => {
                     <div className="flex justify-between">
                         {/* Option de Empleos */}
                         <OptionHeader option={options[0]} changeSection={changeSection}/>
+                        <OptionHeader option={options[1]} changeSection={changeSection}/>
                         {/* Si el usuario es admin o empresa */}
                         {
                             user.rol !== "common" && (
                                 <>
                                     {/* Opcion de Control  */}
-                                    <OptionHeader option={options[1]} changeSection={changeSection}/>
+                                    <OptionHeader option={options[2]} changeSection={changeSection}/>
                                 </>
                             )
                         }
