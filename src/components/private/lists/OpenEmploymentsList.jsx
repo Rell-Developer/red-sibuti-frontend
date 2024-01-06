@@ -2,10 +2,12 @@
 import { useState, useEffect } from "react";
 import clienteAxios from "../../../config/axios.jsx";
 import EmploymentCard from "../EmploymentCard.jsx";
+import Spinner from "../../public/Spinner.jsx";
 // Lista
 const OpenEmploymentsList = () => {
     // States
     const [employments, setEmployments] = useState([]);
+    const [loading, setLoading] = useState(true);
     // Al renderizar la lista
     useEffect(() => {
         const searchEmployments = async () =>{
@@ -13,6 +15,7 @@ const OpenEmploymentsList = () => {
                 let {data} = await clienteAxios("/get-open-employments");
                 // console.log(data);
                 setEmployments(data.data);
+                setLoading(false)
             }
         }
 
@@ -35,29 +38,33 @@ const OpenEmploymentsList = () => {
                 </div> */}
                 {/* Resultados de los empleos*/}
                 <div className="w-full overflow-scroll">
-                    {/* Componente del empleo */}
-                    {
-                        employments.map((employment,index) => <EmploymentCard
-                            key={index}
-                            company={{
-                                id: employment.id,
-                                name:employment.usuario.firstName,
-                                verifiedToken:employment.usuario.verifiedToken,
-                                verifiedAccount:employment.usuario.verifiedAccount
-                            }}   
-                            employment={{
-                                id: employment.id,
-                                description: employment.description,
-                                create_date: employment.createdAt,
-                                status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
-                                vacancies:employment.vacancies,
-                                postulations:employment.postulations,
-                                state_name: employment.state_name,
-                                municipality_name: employment.municipality_name,
-                                parish_name: employment.parish_name,
-                            }}
-                        />)
-                    }
+                    { loading ? (<Spinner/>):(
+                        <>
+                            {/* Componente del empleo */}
+                            {
+                                employments.map((employment,index) => <EmploymentCard
+                                    key={index}
+                                    company={{
+                                        id: employment.id,
+                                        name:employment.usuario.firstName,
+                                        verifiedToken:employment.usuario.verifiedToken,
+                                        verifiedAccount:employment.usuario.verifiedAccount
+                                    }}   
+                                    employment={{
+                                        id: employment.id,
+                                        description: employment.description,
+                                        create_date: employment.createdAt,
+                                        status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
+                                        vacancies:employment.vacancies,
+                                        postulations:employment.postulations,
+                                        state_name: employment.state_name,
+                                        municipality_name: employment.municipality_name,
+                                        parish_name: employment.parish_name,
+                                    }}
+                                />)
+                            }
+                        </>
+                    )}
                 </div>
             </div>
         </>

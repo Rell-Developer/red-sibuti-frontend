@@ -7,8 +7,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import clienteAxios from "../../config/axios.jsx";
 
+import { FaHandshake } from "react-icons/fa";
+
 // Componente del navegador
-const HeaderNav = ({height}) => {
+const HeaderNav = ({height, setOnAgreements, onAgreements}) => {
 
     const [user, setUser] = useState({});
     const [options, setOptions] = useState([
@@ -22,7 +24,7 @@ const HeaderNav = ({height}) => {
         let userJSON = JSON.parse(sessionStorage.getItem("user"));
         
         setUser(userJSON);
-        console.log(user);
+        // console.log(user);
         if (user.rol === "company") {
 
             // let controlOption = { id: 2, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control/empleos" }
@@ -108,14 +110,21 @@ const HeaderNav = ({height}) => {
                             <p className="text-sm text-white">Control</p>  
                         </div> */}
                     </div>
-                    <div className="flex items-center justify-around w-32">
+                    <div className="flex items-center justify-around w-52">
                         {/* <Link
                             to={`/inicio/usuario/${user.id}`}
                         >
                             <img className="cursor-pointer" src="/public/svg/users.svg" alt="user-profile" width={30} height={30}/>
                         </Link> */}
+                        <FaHandshake
+                            size={ onAgreements ? 40: 30}
+                            onClick={()=> setOnAgreements(!onAgreements)}
+                            className={`cursor-pointer ${onAgreements && 'rounded-full bg-white p-2'}`}
+                            color={`${onAgreements ? '#38A3A5':'#fff'}`}
+                        />
+                        {/* <img className={`cursor-pointer`} src="/public/svg/handshake.svg" alt="agreements-icon" width={30} height={30} onClick={()=> setOnAgreements(!onAgreements)}/> */}
                         <img className="cursor-pointer" onClick={() => navigate(`/inicio/usuario/${user.id}`)} src="/public/svg/users.svg" alt="user-profile" width={30} height={30}/>
-                        <p className="font-bold cursor-pointer" onClick={() => logOut()}>Salir</p>
+                        <img className="cursor-pointer" onClick={() => logOut()} src="/public/svg/sign-out.svg" alt="sign-out-profile" width={30} height={30}/>
                     </div>
                 </nav>
             </header>

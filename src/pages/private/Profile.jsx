@@ -50,16 +50,19 @@ const Profile = ({setChatList, chatList}) => {
             delete data.data.password
             setUser(data.data);
 
-            if (userJSON.id === data.data.id) {
+            // if (userJSON.id === data.data.id) {
                 
-                // data.data.nacionalityId = data.data.nacionality.name
-                data.data.dateBirth = new Date(data.data.dateBirth);
+            //     // data.data.nacionalityId = data.data.nacionality.name
+            //     data.data.dateBirth = new Date(data.data.dateBirth);
 
-                setLoading(false);
-                searchHires();
-                return data.data
-            }
+            //     setLoading(false);
+            //     searchHires();
+            //     return data.data
+            // }
+            data.data.dateBirth = new Date(data.data.dateBirth);
+            searchHires();
             setLoading(false);
+            return data.data
         } catch (error) {
             console.log(error.message);
         }
@@ -350,9 +353,7 @@ const Profile = ({setChatList, chatList}) => {
                                     {
                                         user.id !== JSON.parse(sessionStorage.getItem("user")).id ? (
                                             <>
-                                                {
-                                                    JSON.parse(sessionStorage.getItem("user")).rol === "company" && <button className="p-3 bg-color4 rounded-lg shadow font-bold text-white uppercase mx-2" onClick={() => openChat()}>Chatear</button>
-                                                }
+                                                <button className="p-3 bg-color4 rounded-lg shadow font-bold text-white uppercase mx-2" onClick={() => openChat()}>Chatear</button>
                                             </>
                                         ):(
                                             <>

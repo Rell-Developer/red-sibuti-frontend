@@ -2,10 +2,11 @@
 import { useState, useEffect} from 'react'
 import clienteAxios from '../../../config/axios.jsx';
 import ActiveServiceOffering from '../cards/ActiveServiceOffering.jsx';
-
+import Spinner from '../../public/Spinner.jsx';
 const ActiveServicesList = () => {
     // States
     const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(true);
     // Al renderizar el listado
     useEffect(()=> {
         const searchServices = async () => {
@@ -13,6 +14,7 @@ const ActiveServicesList = () => {
                 const { data } = await clienteAxios("/get-service-offerings");
                 console.log(data);
                 setServices(data.result);
+                setLoading(false);
             } catch (error) {
                 console.log("Hubo un error al buscar los servicios");
                 console.log(error.message);
@@ -39,23 +41,29 @@ const ActiveServicesList = () => {
                 {/* Resultados de los servicios*/}
                 <div className="w-full overflow-scroll h-full">
                     {
-                        services.length > 0 ? (
-                            <div className='grid grid-cols-12 gap-4 p-5'>
+                        loading ? (<Spinner/>) :(
+                            <>
                                 {
-                                    services.map( serv => (
-                                        <>
-                                            <ActiveServiceOffering service={serv}/>
-                                            <ActiveServiceOffering service={serv}/>
-                                            <ActiveServiceOffering service={serv}/>
-                                            <ActiveServiceOffering service={serv}/>
-                                        </>
-                                    ))
+                                    services.length > 0 ? (
+                                        <div className='grid grid-cols-12 gap-4 p-5 transition-all'>
+                                            {
+                                                services.map( serv => (
+                                                    <>
+                                                        <ActiveServiceOffering service={serv}/>
+                                                        {/* <ActiveServiceOffering service={serv}/>
+                                                        <ActiveServiceOffering service={serv}/>
+                                                        <ActiveServiceOffering service={serv}/> */}
+                                                    </>
+                                                ))
+                                            }
+                                        </div>
+                                    ):(
+                                        <div className='flex justify-center items-center self-center h-full text-center uppercase'>
+                                            No hay servicios registrados
+                                        </div>
+                                    )
                                 }
-                            </div>
-                        ):(
-                            <div className='flex justify-center items-center self-center h-full text-center uppercase'>
-                                No hay servicios registrados
-                            </div>
+                            </>
                         )
                     }
                 </div>

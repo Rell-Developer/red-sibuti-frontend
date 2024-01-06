@@ -11,7 +11,7 @@ const ActiveServiceOffering = ({service}) => {
         <div 
             className={`
                 bg-white border border-color4 shadow-lg rounded-lg p-5 text-center transition-all cursor-pointer transform
-                active:scale-x-150 h-72 overflow-scroll col-span-full
+                h-72 overflow-scroll col-span-full
                 ${viewService ? "lg:col-span-6":"lg:col-span-3"}
             `}
             onClick={() => setViewService(!viewService)}

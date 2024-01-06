@@ -31,6 +31,7 @@ import ActiveServicesList from './components/private/lists/ActiveServicesList.js
 function App() {
   // Variable para la lista de chat
   let [chatList, setChatList] = useState([]);
+  const [onAgreements, setOnAgreements] = useState(false);
   return (
     <>
       <BrowserRouter>
@@ -49,9 +50,9 @@ function App() {
           </Route>
 
           {/* Rutas Privadas */}
-          <Route path='/inicio' element={<MainLayout section={'employments'} chatList={chatList} setChatList={setChatList} />}>
+          <Route path='/inicio' element={<MainLayout section={'employments'} chatList={chatList} setChatList={setChatList} setOnAgreements={setOnAgreements} onAgreements={onAgreements}/>}>
             {/* <Route index element={</>}/> */}
-            <Route path='' element={<SecondLayout chatList={chatList} setChatList={setChatList} />} >
+            <Route path='' element={<SecondLayout chatList={chatList} setChatList={setChatList} onAgreements={onAgreements} />} >
               <Route index element={<OpenEmploymentsList/>}/>
               <Route path='servicios' element={<ActiveServicesList/>}/>
             </Route>

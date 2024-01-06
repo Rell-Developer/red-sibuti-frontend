@@ -1,13 +1,15 @@
 // Importaciones
 import { useEffect, useState } from "react";
-import EmploymentCard from "../../components/private/EmploymentCard.jsx";
+// import EmploymentCard from "../../components/private/EmploymentCard.jsx";
 import clienteAxios from "../../config/axios.jsx";
 import dateTransform from "../../hooks/dateTransform.js";
 import { Link, useNavigate, Outlet } from "react-router-dom";
-// Layout para la seccion de empleos y servicios
-const SecondLayout = ({chatList, setChatList}) => {
 
-    const [employments, setEmployments] = useState([]);
+import AgreementsList from "../../components/private/lists/AgreementsList.jsx";
+// Layout para la seccion de empleos y servicios
+const SecondLayout = ({chatList, setChatList, onAgreements}) => {
+
+    // const [employments, setEmployments] = useState([]);
     const [employmentsMoreVacancies, setEmploymentsMoreVacancies] = useState([]);
     const [user, setUser] = useState({});
     const [conversationList, setConversationList] = useState([]);
@@ -114,11 +116,11 @@ const SecondLayout = ({chatList, setChatList}) => {
                                     <p className="uppercase font-bold text-lg">NOMBRE COMPLETO</p>
                                     <p className="mt-2 text-sm">{user.fullName || user.name}</p>
                                 </div>
-                                {/* <div className="text-white mt-4">
-                                    <p className="uppercase font-bold text-lg">EDAD</p>
-                                    <p className="mt-2 text-sm">22 años</p>
-                                </div>
                                 <div className="text-white mt-4">
+                                    <p className="uppercase font-bold text-lg">EDAD</p>
+                                    <p className="mt-2 text-sm">{ `${ new Date().getFullYear() - new Date(user.dateBirth).getFullYear()} años`}</p>
+                                </div>
+                                {/* <div className="text-white mt-4">
                                     <p className="uppercase font-bold text-lg">OCUPACION</p>
                                     <p className="mt-2 text-sm">Programador</p>
                                 </div>
@@ -132,60 +134,76 @@ const SecondLayout = ({chatList, setChatList}) => {
                 </div>
             </div>
             <Outlet/>
-            {/* Ranking y Chat */}
             <div className="w-full" style={{height: "91vh"}}>
-                <div className="m-5">
-                    <div className="">
-                        <div className="rounded shadow-lg bg-white py-5 my-5">
-                            <div>
-                                <h3 className="uppercase text-color5 font-bold text-xl text-center">empleos con más vacantes</h3>
+            {
+                !onAgreements ? (
+                    // {/* Ranking y Chat */}
+                    <div className="m-5">
+                        <div className="">
+                            <div className="rounded shadow-lg bg-white py-5 my-5">
+                                <div>
+                                    <h3 className="uppercase text-color5 font-bold text-xl text-center">empleos con más vacantes</h3>
+                                </div>
+                                <div className="flex flex-col overflow-scroll h-1/4">
+                                    {
+                                        employmentsMoreVacancies.map((employment,index) => (
+                                            <Link 
+                                                className=" flex flex-col w-5/6 mx-auto rounded-lg px-5 py-1 my-2 hover:shadow transition-all hover:border"
+                                                to={`/inicio/ver-empleo/${employment.id}`}
+                                            >
+                                                <h4 className="text-lg font-bold">{employment.usuario.firstName}</h4>
+                                                <p className="text-sm">{employment.description}</p>
+                                                <em className="font-bold text-sm">{dateTransform(employment.createdAt)}</em>
+                                            </Link>
+                                        ))
+                                    }
+                                </div>
                             </div>
-                            <div className="flex flex-col overflow-scroll h-1/4">
-                                {
-                                    employmentsMoreVacancies.map((employment,index) => (
-                                        <Link 
-                                            className=" flex flex-col w-5/6 mx-auto rounded-lg px-5 py-1 my-2 hover:shadow transition-all hover:border"
-                                            to={`/inicio/ver-empleo/${employment.id}`}
-                                        >
-                                            <h4 className="text-lg font-bold">{employment.usuario.firstName}</h4>
-                                            <p className="text-sm">{employment.description}</p>
-                                            <em className="font-bold text-sm">{dateTransform(employment.createdAt)}</em>
-                                        </Link>
-                                    ))
-                                }
-                            </div>
-                        </div>
-                        <div className="rounded shadow-lg bg-white py-5 my-5">
-                            <div>
-                                <h3 className="uppercase text-color5 font-bold text-xl text-center">conversaciones</h3>
-                            </div>
-                            <div className="flex flex-col overflow-scroll h-1/4">
-                                {
-                                    conversationList && conversationList.length > 0 ? (
-                                        <>
-                                            {
-                                                conversationList.map((conversation,index) => (
-                                                    <div 
-                                                        className=" flex flex-col w-5/6 mx-auto rounded-lg px-5 p-2 my-2 hover:shadow transition-all hover:border cursor-pointer"
-                                                        onClick={() => openConversation(conversation.otherUser)}
-                                                    >
-                                                        <h4 className="text-lg font-bold">{conversation.otherUser.name}</h4>
-                                                    </div>
-                                                ))
-                                            }
-                                        </>
-                                    ):(
-                                        <>
-                                            <h4 className="mx-auto my-5">
-                                                Aun no tiene conversaciones
-                                            </h4>
-                                        </>
-                                    )
-                                }
+                            <div className="rounded shadow-lg bg-white py-5 my-5">
+                                <div>
+                                    <h3 className="uppercase text-color5 font-bold text-xl text-center">conversaciones</h3>
+                                </div>
+                                <div className="flex flex-col overflow-scroll h-1/4">
+                                    {
+                                        conversationList && conversationList.length > 0 ? (
+                                            <>
+                                                {
+                                                    conversationList.map((conversation,index) => (
+                                                        <div 
+                                                            className=" flex flex-col w-5/6 mx-auto rounded-lg px-5 p-2 my-2 hover:shadow transition-all hover:border cursor-pointer"
+                                                            onClick={() => openConversation(conversation.otherUser)}
+                                                        >
+                                                            <h4 className="text-lg font-bold">{conversation.otherUser.name}</h4>
+                                                        </div>
+                                                    ))
+                                                }
+                                            </>
+                                        ):(
+                                            <>
+                                                <h4 className="mx-auto my-5">
+                                                    Aun no tiene conversaciones
+                                                </h4>
+                                            </>
+                                        )
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                ):(
+                    // {/* Acuerdos */}
+                    <div className="m-5">
+                        <div className="rounded shadow-lg bg-white py-5 my-5">
+                            <div>
+                                <h3 className="uppercase text-color5 font-bold text-xl text-center">tus Acuerdos</h3>
+                            </div>
+                            <div className="flex flex-col overflow-scroll h-1/4">
+                                <AgreementsList user={user}/>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
             </div>
         </div>
     )
