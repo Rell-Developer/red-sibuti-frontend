@@ -58,7 +58,7 @@ const PositionForm = () => {
             // Validacion
             if (!dataPosition.name || !dataPosition.name.trim().includes("")) {
                 setLoading(false);
-                setAlerta({error: true, message:"Es nombre del cargo es obligatorio"});
+                setAlerta({error: true, message:"El nombre del cargo es obligatorio"});
                 return setTimeout(() => setAlerta(null), 2000);
             }
             // Establecemos una ruta dinamica

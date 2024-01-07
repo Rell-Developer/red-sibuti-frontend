@@ -16,6 +16,8 @@ import PostulationsListAdmin from './pages/private/PostulationListAdmin.jsx';
 import Profile from './pages/private/Profile.jsx';
 import PositionsList from './pages/private/admin/PositionsList.jsx';
 import PositionForm from './components/private/forms/PositionForm.jsx';
+import ServicesList from './pages/private/admin/ServicesList.jsx';
+import ServiceOfferingsList from './pages/private/admin/ServiceOfferingsList.jsx';
 
 // Routes
 import EmploymentsRoutes from './routes/EmploymentsRoutes.jsx';
@@ -26,6 +28,8 @@ import SecondLayout from './layouts/private/SecondLayout.jsx';
 import UsersList from './pages/private/UsersList';
 import OpenEmploymentsList from './components/private/lists/OpenEmploymentsList.jsx';
 import ActiveServicesList from './components/private/lists/ActiveServicesList.jsx';
+import ServiceForm from './components/private/forms/ServiceForm.jsx';
+import ServiceOfferingForm from './components/private/forms/ServiceOfferingForm.jsx';
 
 // Funcion a retornar
 function App() {
@@ -83,6 +87,18 @@ function App() {
                 <Route index element={<PositionsList/>}/>
                 <Route path=":id" element={<PositionForm/>}/>
                 <Route path="nuevo" element={<PositionForm/>}/>
+              </Route>
+              {/* Servicios */}
+              <Route path='servicios' element={<Outlet/>}>
+                <Route index element={<ServicesList/>}/>
+                <Route path=":id" element={<ServiceForm/>}/>
+                <Route path="nuevo" element={<ServiceForm/>}/>
+              </Route>
+              {/* Oferta de Servicios */}
+              <Route path='oferta-servicios' element={<Outlet/>}>
+                <Route index element={<ServiceOfferingsList/>}/>
+                <Route path=":id" element={<ServiceOfferingForm/>}/>
+                <Route path="nuevo" element={<ServiceOfferingForm/>}/>
               </Route>
             </Route>
           </Route>  

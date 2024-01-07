@@ -12,7 +12,7 @@ const PositionsList = () => {
         const searchPositions = async () => {
             try {
                 let { data } = await clienteAxios("/get-positions");
-                console.log(data);
+                // console.log(data);
                 setPositions(data.data)
             } catch (error) {
                 console.error(error.message);
