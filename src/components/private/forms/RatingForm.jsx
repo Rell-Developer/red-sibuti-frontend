@@ -17,6 +17,8 @@ const RatingForm = () => {
     const [services, setServices] = useState([]);
     const [onDelete, setOnDelete] = useState(false);
     const [users, setUsers] = useState([]);
+    const [ratingValue, setRatingValue] = useState(0);
+
     // Parametros del link
     const params = useParams();
     // UseEffect
@@ -29,7 +31,7 @@ const RatingForm = () => {
             const searchRating = async() => {
                 // Buscamos el cargo
                 let { data } = await clienteAxios(`/get-rating/${params.id}`);
-                console.log(data);
+                // console.log(data);
                 // Verificamos que exista
                 if(data.error){
                     setAlerta({error:true, message: data.message});
@@ -117,16 +119,18 @@ const RatingForm = () => {
             // Establecemos una ruta dinamica
             let infoService;
             const dataToSend = { 
-                ...ratingObj
+                // ...ratingObj,
+                points: ratingValue,
+                description: ratingObj.describe
             }
             // let name = `${dataService.name[0].toUpperCase()}${dataService.name.toLowerCase().slice(1)}`;
             // Verificamos si tiene id, es para editar, sino, es para crear
             if (parseInt(params.id) > 0) {
                 let { data } = await clienteAxios.put(`/update-rating/${params.id}`, dataToSend);
                 infoService = data;
-                console.log(data);
+                // console.log(data);
             }
-            return
+            // return
             if (window.location.pathname.split("calificaciones/")[1] === "nuevo") {
                 let { data } = await clienteAxios.post("/create-service-offering", dataToSend);
                 infoService = data;
@@ -205,7 +209,7 @@ const RatingForm = () => {
                 className='mx-auto w-full md:w-5/6'
             >
                 {
-                    loading == null ? (
+                    loading ? (
                         <Spinner/>
                     ):(
                         <>
@@ -217,110 +221,24 @@ const RatingForm = () => {
                                             {/* Servicio */}
                                             <div className="flex flex-col col-span-4">
                                                 <label htmlFor="service" className="font-bold text-lg text-center">Servicio</label>
-                                                {
-                                                    editMode ? (
-                                                        <>
-                                                            <select 
-                                                                id="service"
-                                                                type="text"
-                                                                className="rounded-xl p-2 border-2 border-black mt-2 shadow-md bg-white" 
-                                                                value={ratingObj?.servicioId }
-                                                                onChange={(e) => setRatingObj({ 
-                                                                    ...ratingObj,
-                                                                    servicioId: e.target.value 
-                                                                })}
-                                                            >
-                                                                <option value="">Seleccione un Servicio</option>
-                                                                {
-                                                                    services.length > 0 && (
-                                                                        <>
-                                                                            {services.map( serv => <option value={serv.id}>{serv.name}</option>)}
-                                                                        </>
-                                                                    )
-                                                                }
-                                                            </select>
-                                                        </>
-                                                    ):(
-                                                        <p className="text-center">{rating?.agreement?.service_offering?.servicio?.name}</p>
-                                                    )
-                                                }
+                                                <p className="text-center">{rating?.agreement?.service_offering?.servicio?.name}</p>
                                             </div>
                                             {/* Ofertante */}
                                             <div className="flex flex-col col-span-4">
                                                 <label htmlFor="bidder" className="font-bold text-lg text-center">Ofertante</label>
-                                                {
-                                                    editMode ? (
-                                                        <>
-                                                            <select 
-                                                                id="bidder"
-                                                                type="text"
-                                                                className="rounded-xl p-2 border-2 border-black mt-2 shadow-md bg-white" 
-                                                                value={ratingObj.usuarioId}
-                                                                onChange={(e) => setRatingObj({ ...ratingObj, 
-                                                                    usuarioId: e.target.value
-                                                                })
-                                                                }
-                                                            >
-                                                                <option value="">Seleccione un Ofertante</option>
-                                                                {
-                                                                    users.length > 0 && (
-                                                                        <>
-                                                                            {
-                                                                                users.map( user => <option value={user.id}>{user.firstName} {user.lastName} - {user.identification}</option>)
-                                                                            }
-                                                                        </>
-                                                                    )
-                                                                }
-                                                            </select>
-                                                        </>
-                                                    ):(
-                                                        <p className="text-center">{rating?.agreement?.service_offering?.usuario?.firstName} {rating?.agreement?.service_offering?.usuario?.lastName} - {rating?.agreement?.service_offering?.usuario?.identification}</p>
-                                                    )
-                                                }
+                                                <p className="text-center">
+                                                    {rating?.agreement?.service_offering?.usuario?.firstName} {rating?.agreement?.service_offering?.usuario?.lastName} - {rating?.agreement?.service_offering?.usuario?.identification}
+                                                </p>
                                             </div>
                                             {/* Status */}
                                             <div className="flex flex-col col-span-4">
                                                 <label htmlFor="status" className="font-bold text-lg text-center">Estatus</label>
-                                                {
-                                                    editMode ? (
-                                                        <>
-                                                            <select 
-                                                                id="status"
-                                                                type="text"
-                                                                className="rounded-xl p-2 border-2 border-black mt-2 shadow-md bg-white" 
-                                                                value={!ratingObj.isActive ? "false":"true"}
-                                                                onChange={(e) => setRatingObj({ ...ratingObj, 
-                                                                    isActive: e.target.value === "true" ? true:false
-                                                                })}
-                                                            >
-                                                                <option value="true">Activo</option>
-                                                                <option value="false">Inactivo</option>
-                                                            </select>
-                                                        </>
-                                                    ):(
-                                                        <p className="text-center">{rating.agreement?.service_offering.isActive ? "Activo":"Inactivo"}</p>
-                                                    )
-                                                }
+                                                <p className="text-center">{rating.agreement?.service_offering.isActive ? "Activo":"Inactivo"}</p>
                                             </div>
                                             {/* Description */}
                                             <div className="flex flex-col col-span-full">
                                                 <label htmlFor="description" className="text-center font-bold">Descripcion del servicio</label>
-                                                {
-                                                    editMode ? (
-                                                        <>
-                                                            <textarea 
-                                                                id="status"
-                                                                className="rounded-xl p-2 border-2 border-black mt-2 shadow-md bg-white" 
-                                                                rows={3}
-                                                                value={ ratingObj.description }
-                                                                onChange={(e) => setRatingObj({ ...ratingObj, description: e.target.value })}
-                                                            >
-                                                            </textarea>
-                                                        </>
-                                                    ):(
-                                                        <p className="text-left">{rating.agreement?.service_offering.description}</p>
-                                                    )
-                                                }
+                                                <p className="text-left">{rating.agreement?.service_offering.description}</p>
                                             </div>
                                             {/* Puntuacion */}
                                             <div className="flex flex-col col-span-full">
@@ -328,6 +246,8 @@ const RatingForm = () => {
                                                 <RatingStar 
                                                     rating={rating?.points}
                                                     editMode={editMode}
+                                                    ratingValue={ratingValue}
+                                                    setRatingValue={setRatingValue}
                                                     // setData={setRatingObj}
                                                     // isRatingForm={true}
                                                     // ratingObj={ratingObj}

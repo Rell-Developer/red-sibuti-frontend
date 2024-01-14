@@ -1,5 +1,5 @@
 // Imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 // Component
 const RatingStar = ({
@@ -7,28 +7,28 @@ const RatingStar = ({
         size = 30,          // size stars    
         rating = 0,         // rating value
         editMode = false,   // form mode 
-        setData,             // set Data
-        isRatingForm,
-        ratingObj
+        ratingValue,
+        setRatingValue
     }) => {
     // states
-    const [ratingValue, setRating] = useState(rating);
     const [hover, setHover] = useState(null);
+
+    useEffect(()=>{
+        if (rating) {
+            setRatingValue(rating);
+        }
+    },[rating]);
+
     // set star color with this function
     const setColor = (currentRating) => {
-        // if (isRatingForm) {
-        //     setData({...ratingObj, points: currentRating});
-        // }else{
-        //     setData(currentRating);
-        // }
         if (editMode) {
-            if (currentRating <= (hover || rating)) {
+            if (currentRating <= (hover || ratingValue)) {
                 return "#ffc107";
             }else{
                 return "#e4e5e9";
             }
         }else{
-            if (currentRating <= rating) {
+            if (currentRating <= ratingValue) {
                 return "#ffc107";
             }else{
                 return "#e4e5e9";
@@ -49,7 +49,11 @@ const RatingStar = ({
                                         type="radio" 
                                         name="rating" 
                                         value={currentRating} 
-                                        onClick={() => rating === currentRating ? rating = 0: setRating(currentRating)} 
+                                        onClick={() => {
+                                            let value = ratingValue === currentRating ? 0: currentRating;
+                                            setRatingValue(value);
+                                            // rating = value;
+                                        }} 
                                         className="hidden"
                                     />
                                 )}
