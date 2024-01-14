@@ -3,6 +3,7 @@ import { useState, useEffect} from 'react'
 import clienteAxios from '../../../config/axios.jsx';
 import ActiveServiceOffering from '../cards/ActiveServiceOffering.jsx';
 import Spinner from '../../public/Spinner.jsx';
+// Listado de ofertas de servicios
 const ActiveServicesList = () => {
     // States
     const [services, setServices] = useState([]);
@@ -11,8 +12,9 @@ const ActiveServicesList = () => {
     useEffect(()=> {
         const searchServices = async () => {
             try {
+                // Buscamos las ofertas de oferta de servicios
                 const { data } = await clienteAxios("/get-service-offerings");
-                console.log(data);
+                // console.log(data);
                 setServices(data.result);
                 setLoading(false);
             } catch (error) {
@@ -45,16 +47,9 @@ const ActiveServicesList = () => {
                             <>
                                 {
                                     services.length > 0 ? (
-                                        <div className='grid grid-cols-12 gap-4 p-5 transition-all'>
+                                        <div className='grid grid-cols-12 grid-rows-12 gap-4 p-5 transition-all'>
                                             {
-                                                services.map( serv => (
-                                                    <>
-                                                        <ActiveServiceOffering service={serv}/>
-                                                        {/* <ActiveServiceOffering service={serv}/>
-                                                        <ActiveServiceOffering service={serv}/>
-                                                        <ActiveServiceOffering service={serv}/> */}
-                                                    </>
-                                                ))
+                                                services.map( serv => <ActiveServiceOffering service={serv}/>)
                                             }
                                         </div>
                                     ):(

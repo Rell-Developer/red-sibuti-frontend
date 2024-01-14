@@ -41,7 +41,9 @@ const ControlLayout = () => {
                                 <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/oferta-servicios">
                                     <p className="font-bold text-white mx-2 uppercase">Oferta de Servicios</p>
                                 </Link>
-                                
+                                <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/calificaciones">
+                                    <p className="font-bold text-white mx-2 uppercase">Calificaciones</p>
+                                </Link>
                             </>
                         )
                     }

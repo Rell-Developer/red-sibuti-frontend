@@ -18,6 +18,7 @@ import PositionsList from './pages/private/admin/PositionsList.jsx';
 import PositionForm from './components/private/forms/PositionForm.jsx';
 import ServicesList from './pages/private/admin/ServicesList.jsx';
 import ServiceOfferingsList from './pages/private/admin/ServiceOfferingsList.jsx';
+import RatingsList from './pages/private/admin/RatingsList.jsx';
 
 // Routes
 import EmploymentsRoutes from './routes/EmploymentsRoutes.jsx';
@@ -30,6 +31,7 @@ import OpenEmploymentsList from './components/private/lists/OpenEmploymentsList.
 import ActiveServicesList from './components/private/lists/ActiveServicesList.jsx';
 import ServiceForm from './components/private/forms/ServiceForm.jsx';
 import ServiceOfferingForm from './components/private/forms/ServiceOfferingForm.jsx';
+import RatingForm from './components/private/forms/RatingForm.jsx';
 
 // Funcion a retornar
 function App() {
@@ -99,6 +101,12 @@ function App() {
                 <Route index element={<ServiceOfferingsList/>}/>
                 <Route path=":id" element={<ServiceOfferingForm/>}/>
                 <Route path="nuevo" element={<ServiceOfferingForm/>}/>
+              </Route>
+              {/* Calificaciones */}
+              <Route path='calificaciones' element={<Outlet/>}>
+                <Route index element={<RatingsList/>}/>
+                <Route path=":id" element={<RatingForm/>}/>
+                {/* <Route path="nuevo" element={<ServiceOfferingForm/>}/> */}
               </Route>
             </Route>
           </Route>  
