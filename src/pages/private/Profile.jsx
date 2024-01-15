@@ -26,6 +26,7 @@ const Profile = ({setChatList, chatList}) => {
     const [alerta, setAlerta] = useState(false);
     const [changePass, setChangePass] = useState(false);
     const [employments, setEmployments] = useState([]);
+    const [imgPreview, setImgPreview] = useState("");
 
     // Objeto en donde se guarda la configuracion general de los campos requeridos
     const objRequired = {
@@ -48,7 +49,10 @@ const Profile = ({setChatList, chatList}) => {
             let userJSON = JSON.parse(sessionStorage.getItem("user"));
             let {data} = await clienteAxios(`/users/${params.id}`);
             delete data.data.password
+            // console.log(data);
             setUser(data.data);
+
+            data.data.imgProfile ? setImgPreview(`${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${data.data.imgProfile}`): setImgPreview("/public/img/generic-user.png");
 
             // if (userJSON.id === data.data.id) {
                 
@@ -69,10 +73,15 @@ const Profile = ({setChatList, chatList}) => {
     }
 
     const onHandleSubmit = async data =>{
-        // console.log(data);
         try {
+            let dataToSend = new FormData();
+            dataToSend.append("data", JSON.stringify(data));
+            // console.log(data.imgProfile[0])
+            dataToSend.append("imgProfile", data.imgProfile[0])
+            // console.log(dataToSend);
             setLoading(true);
-            let res = await clienteAxios.put(`/users/${params.id}`, data);
+            let res = await clienteAxios.put(`/user-profile/${params.id}`, dataToSend);
+            
             setTimeout(() => {
                 if (res.data.error) {
                     setAlerta({ message: res.data.message, error: true});
@@ -144,9 +153,6 @@ const Profile = ({setChatList, chatList}) => {
         try {
             let { data: { data } } = await clienteAxios(`/users/get-hires/${params.id}`);
             
-
-
-
             let employs = data.map( res => res['postulacione'] ? res['postulacione']['employment']: false);
             //     if (res['postulacione']) {
                     
@@ -154,10 +160,32 @@ const Profile = ({setChatList, chatList}) => {
             //     }
             // });
             employs = employs.filter( employ => employ !== false);
-            console.log(employs);
+            // console.log(employs);
             setEmployments(employs);
         } catch (error) {
             console.log(error.message);
+        }
+    }
+    // Funcion para cambiar la imagen de perfil
+    const validateSize = (MBLimit, file) => {
+        if (file && MBLimit > 0) {
+            if (file[0].size > (MBLimit * 1024000)) {
+                setAlerta({
+                    error: true,
+                    message:`Su foto de perfil no debe superar los ${MBLimit} MB`
+                });
+                setTimeout(() => setAlerta(null), 5000);
+            }else{
+                setAlerta(null);
+
+                const reader = new FileReader();
+
+                reader.onloadend = () => {
+                    setImgPreview(reader.result)
+                };
+
+                reader.readAsDataURL(file[0]);
+            }
         }
     }
 
@@ -176,17 +204,43 @@ const Profile = ({setChatList, chatList}) => {
                                 { !changePass ? (
                                         <form action="" onSubmit={handleSubmit(data => onHandleSubmit(data))}>
                                             <div className="flex flex-col lg:flex-row my-5">
-                                                <div className="w-1/5">
-                                                    <img src="/public/img/generic-user.png" alt="imagen-perfil" className={`${user.authToken === "" || !user.authToken ? "":"border-color4"} rounded-full w-36 h-36 border-4 mx-auto`}/>
-                                                    {/* TODO: Colocar funcion para subir imagen de perfil */}
-                                                    {/* {
-                                                        editMode && (
-                                                            <>
-                                                                <input id="imgProfile" type="file" accept="image/*" className="hidden" {...register('imgProfile')}/>
-                                                                <a href="#imgProfile">Subir una Imagen de Perfil</a>
-                                                            </>
-                                                        )
-                                                    } */}
+                                                <div className="w-1/5 flex flex-col justify-center items-center">                                                    
+                                                    {editMode ? (
+                                                        <>
+                                                            <label 
+                                                                htmlFor="imgProfile" 
+                                                                className="cursor-pointer w-36 h-36 flex mx-auto"
+                                                            >
+                                                                <img 
+                                                                    src={imgPreview}
+                                                                    alt="imagen-perfil" 
+                                                                    className={`${user.authToken === "" || !user.authToken ? "":"border-color4"} rounded-full w-full border-4 mx-auto`}
+                                                                />
+                                                            </label>
+                                                            <input 
+                                                                id="imgProfile" 
+                                                                type="file" 
+                                                                accept="image/*" 
+                                                                className="hidden" 
+                                                                {...register('imgProfile',{
+                                                                    required: {
+                                                                        value: true,
+                                                                        message:"Foto de Perfil es obligatorio"
+                                                                    },
+                                                                    onChange: e => validateSize(2, e.target.files),
+                                                                })}
+                                                            />
+                                                            {
+                                                                errors.imgProfile?.message && <span className="text-red-600">{errors.imgProfile.message}</span>
+                                                            }
+                                                        </>
+                                                    ):(
+                                                        <img 
+                                                            src={imgPreview}
+                                                            alt="imagen-perfil" 
+                                                            className={`${user.authToken === "" || !user.authToken ? "":"border-color4"} rounded-full w-36 h-36 border-4 mx-auto`}
+                                                        />
+                                                    )}
                                                 </div>
                                                 <div className="flex m-4">
                                                     <div>
@@ -363,7 +417,10 @@ const Profile = ({setChatList, chatList}) => {
                                                             <button 
                                                                 type="button" 
                                                                 className="bg-color6 hover:bg-gray-600 text-white font-bold p-3 mx-2 rounded-lg shadow-lg transition-all uppercase" 
-                                                                onClick={() => setEditMode(false)}
+                                                                onClick={() => {
+                                                                    setEditMode(false);
+                                                                    setImgPreview(user.imgProfile || "/public/img/generic-user.png")
+                                                                }}
                                                             >
                                                                 Descartar
                                                             </button>

@@ -13,6 +13,7 @@ const SecondLayout = ({chatList, setChatList, onAgreements}) => {
     const [employmentsMoreVacancies, setEmploymentsMoreVacancies] = useState([]);
     const [user, setUser] = useState({});
     const [conversationList, setConversationList] = useState([]);
+    const [imgProfile, setImgProfile] = useState("/public/img/generic-user.png");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,6 +25,10 @@ const SecondLayout = ({chatList, setChatList, onAgreements}) => {
         }
         // Establecemos en el user
         setUser(JSON.parse(sessionStorage.getItem("user")));
+        // Verificamos si tiene imagen de perfil
+        if (userSession.imgProfile) {
+            setImgProfile(`${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${userSession.imgProfile}`);
+        }
         // console.log(JSON.parse(sessionStorage.getItem("user")));
         const searchEmployments = async () =>{
             // if (!employments || employments.length == 0) {
@@ -108,7 +113,7 @@ const SecondLayout = ({chatList, setChatList, onAgreements}) => {
                 <div className="bg-white rounded-lg border-2 border-color3 w-5/6 mx-auto mt-5 p-4 shadow-lg">
                     <div className="mx-auto w-5/6">
                         <div className="mx-auto">
-                            <img src="/public/img/generic-user.png" alt="imagen-perfil" className="rounded-full w-36 h-36 border-color4 border-4 mx-auto"/>
+                            <img src={imgProfile} alt="imagen-perfil" className="rounded-full w-36 h-36 border-color4 border-4 mx-auto"/>
                         </div>
                         <div className="mx-auto bg-color4 p-5 rounded-lg shadow-lg" style={{marginTop: "-70px"}}>
                             <div className="text-center" style={{marginTop:"60px"}}>

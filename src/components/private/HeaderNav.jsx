@@ -21,7 +21,13 @@ const HeaderNav = ({height, setOnAgreements, onAgreements}) => {
 
     const navigate = useNavigate();
     useEffect(()=>{
-        let userJSON = JSON.parse(sessionStorage.getItem("user"));
+        let userJSON = sessionStorage.getItem("user");
+
+        if (userJSON && userJSON !== "undefined") {
+            userJSON = JSON.parse(userJSON);
+        }else{
+            navigate("/");
+        }
         
         setUser(userJSON);
         // console.log(user);
