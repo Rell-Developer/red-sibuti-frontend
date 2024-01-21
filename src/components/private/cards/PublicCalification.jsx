@@ -11,7 +11,7 @@ const PublicCalification = ({calification}) => {
         >
             <div className="flex flex-col col-span-4 justify-center text-center items-center">
                 <img 
-                    src="/public/img/generic-user.png" 
+                    src={calification.usuario.imgProfile? `${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${calification.usuario.imgProfile}`:"/public/img/generic-user.png"}
                     alt="profile-img" 
                     width={"50"} 
                     className='rounded-full border-color4 border-2 my-2 mx-auto transition-all'

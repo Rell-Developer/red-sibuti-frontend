@@ -17,7 +17,7 @@ import ChatListComponent from "../../components/private/chat/ChatListComponent.j
 // Componente Layout
 const MainLayout = ({section, chatList, setChatList, setOnAgreements, onAgreements}) => {
     // UseState
-    const [users, setUsers] = useState([]);
+    // const [users, setUsers] = useState([]);
     const [optionSelected, setOptionSelected] = useState('empleos');
     
     // Retorno al cliente

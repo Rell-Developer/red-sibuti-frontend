@@ -45,8 +45,8 @@ const SecondLayout = ({chatList, setChatList, onAgreements}) => {
         // Funcion para buscar las conversaciones
         const searchConversations = async () => {
             try {
-                console.log("Vamos a buscar las conversaciones");
-                console.log(user);
+                // console.log("Vamos a buscar las conversaciones");
+                // console.log(user);
                 const { data } = await clienteAxios(`/get-conversations/${user.id || JSON.parse(sessionStorage.getItem("user")).id}`);
                 setConversationList(data.data)
             } catch (error) {
@@ -175,10 +175,18 @@ const SecondLayout = ({chatList, setChatList, onAgreements}) => {
                                                 {
                                                     conversationList.map((conversation,index) => (
                                                         <div 
-                                                            className=" flex flex-col w-5/6 mx-auto rounded-lg px-5 p-2 my-2 hover:shadow transition-all hover:border cursor-pointer"
+                                                            className="grid grid-cols-12 gap-4 w-5/6 items-center mx-auto rounded-lg px-5 p-2 my-2 hover:shadow transition-all hover:border cursor-pointer"
                                                             onClick={() => openConversation(conversation.otherUser)}
                                                         >
-                                                            <h4 className="text-lg font-bold">{conversation.otherUser.name}</h4>
+                                                            <img 
+                                                                src={
+                                                                    conversation.otherUser.imgProfile !== "" ? 
+                                                                        `${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${conversation.otherUser.imgProfile}`:"/public/img/generic-user.png"} 
+                                                                alt="profile-img" 
+                                                                width={50}
+                                                                className="rounded-full col-span-3"
+                                                            />
+                                                            <h4 className="text-lg font-bold col-span-9">{conversation.otherUser.name}</h4>
                                                         </div>
                                                     ))
                                                 }

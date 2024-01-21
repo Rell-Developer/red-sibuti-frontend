@@ -9,6 +9,7 @@ import MainLayout from './layouts/private/MainLayout.jsx';
 import ControlLayout from './layouts/private/ControlLayout.jsx';
 
 // Pages
+import InitHome from './pages/public/InitHome.jsx';
 import Employments from './pages/private/Employments.jsx';
 import ViewEmployment from './pages/private/ViewEmployment.jsx';
 import PostulationsList from './pages/private/PostulationsList.jsx';
@@ -19,6 +20,7 @@ import PositionForm from './components/private/forms/PositionForm.jsx';
 import ServicesList from './pages/private/admin/ServicesList.jsx';
 import ServiceOfferingsList from './pages/private/admin/ServiceOfferingsList.jsx';
 import RatingsList from './pages/private/admin/RatingsList.jsx';
+import Dashboard from './pages/private/admin/Dashboard.jsx';
 
 // Routes
 import EmploymentsRoutes from './routes/EmploymentsRoutes.jsx';
@@ -45,7 +47,8 @@ function App() {
           {/* Rutas Publicas */}
           <Route path="/">
             {/* Persona Comun */}
-            <Route index element={<JoinLayout section={"signin"} view={"common"}/>}/>
+            <Route index element={<InitHome/>}/>
+            <Route path='iniciar-sesion' element={<JoinLayout section={"signin"} view={"common"}/>}/>
             <Route path='registrarse' element={<JoinLayout section={"signup"} view={"common"}/>}/>
             <Route path='olvide-contrasena' element={<JoinLayout section={"forgot-password"} view={"common"}/>}/>
             <Route path='confirmar/:token' element={<JoinLayout section={"confirm-account"} view={"common"}/>}/>
@@ -66,6 +69,7 @@ function App() {
             <Route path='ver-empleo/:id' element={<ViewEmployment/>}/>
             {/* Rutas para administradores y/o empresas */}
             <Route path='control' element={<ControlLayout/>}>
+              <Route index element={<Dashboard />}/>
               {/* Empleos */}
               <Route path='empleos' element={<Outlet/>}>
                 {/* Lista de Empleos */}

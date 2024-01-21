@@ -16,7 +16,7 @@ const EmploymentCard = ({
                 <div className="grid grid-cols-4 gap-2 w-full items-center">
                     <div className="flex col-span-2">
                         <img 
-                            src="/public/img/generic-user.png" 
+                            src={company.imgProfile? `${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${company.imgProfile}`:"/public/img/generic-user.png"}
                             alt="imagen-perfil" 
                             className="rounded-full w-24 h-24 border-color4 border-2 cursor-pointer hidden lg:flex" 
                             style={{width:"96px", height:"96px"}}

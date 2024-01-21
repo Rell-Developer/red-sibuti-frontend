@@ -133,7 +133,10 @@ const ViewEmployment = () => {
                                             {/* Empresa, titulo y ubicacion */}
                                             <div className="col-span-4 grid grid-cols-6">
                                                 <div className="col-span-6 flex">
-                                                    <img src="/public/img/generic-user.png" alt="imagen-perfil" className="rounded-full w-28 h-28 border-color4 border-2"/>
+                                                    <img 
+                                                        src={employment.usuario.imgProfile? `${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${employment.usuario.imgProfile}`:"/public/img/generic-user.png"} 
+                                                        alt="imagen-perfil" 
+                                                        className="rounded-full w-28 h-28 border-color4 border-2"/>
                                                     <div className="flex flex-col justify-center mx-5">
                                                         {/* Nombre de la empresa */}
                                                         <h3 className="text-3xl font-bold">{employment.usuario.firstName}</h3>

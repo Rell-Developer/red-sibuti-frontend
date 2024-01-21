@@ -103,7 +103,11 @@ const AgreementsCard = ({agreement}) => {
                             onClick={() => getRating()}    
                         >
                             <div>
-                                <img src="/public/img/generic-user.png" alt="user-profile" width={50} className="rounded-full"/>
+                                <img 
+                                    src={agreement.service_offering.usuario.imgProfile? `${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${agreement.service_offering.usuario.imgProfile}`:"/public/img/generic-user.png"}
+                                    alt="user-profile" 
+                                    width={50} 
+                                    className="rounded-full"/>
                             </div>
                             <div className="mx-2">
                                 <div>

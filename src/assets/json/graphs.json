@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "title": "Empleos por Estatus",
+        "nodeId":"employmentsStatus",
+        "route": "/get-employments-count-by-status"
+    },
+    {
+        "id": 2,
+        "title": "Empleos por Cargos",
+        "nodeId":"employmentsPositions",
+        "route": "/get-employments-count-by-positions"
+    },
+    {
+        "id":3,
+        "title": "Postulaciones por Cargo",
+        "nodeId": "PostulationsPosition",
+        "route": "/get-postulations-count-by-positions"
+    },
+    {
+        "id":4,
+        "title": "Ofertas de Servicios por Estatus",
+        "nodeId":"serviceOfferingsStatus",
+        "route": "/get-count-service-offerings"
+    },
+    {   
+        "id": 5,
+        "title": "Ofertas de Servicios por Tipo de Servicio",
+        "nodeId":"serviceOfferingsTypes",
+        "route": "/get-count-service-offerings-by-service"
+    }
+]

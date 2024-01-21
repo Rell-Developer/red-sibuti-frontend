@@ -16,7 +16,7 @@ const Employments = () => {
                 usuarioId: user.id,
                 all: user.rol === "company" ? false: true
             });
-            console.log(data);
+            // console.log(data);
 
             setEmpleos(data.data);
         }

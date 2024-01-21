@@ -30,7 +30,7 @@ const ActiveServiceOffering = ({service}) => {
                             to={`/inicio/usuario/${service.usuario.id}`}
                         >
                             <img 
-                                src="/public/img/generic-user.png" 
+                                src={ service.usuario.imgProfile ? `${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${service.usuario.imgProfile}`:"/public/img/generic-user.png"}
                                 alt="profile-img" 
                                 width={"100"} 
                                 className='rounded-full border-color4 border-2 my-2 mx-auto hover:shadow-lg hover:border-4 transition-all'

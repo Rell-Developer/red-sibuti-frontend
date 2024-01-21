@@ -48,7 +48,8 @@ const OpenEmploymentsList = () => {
                                         id: employment.id,
                                         name:employment.usuario.firstName,
                                         verifiedToken:employment.usuario.verifiedToken,
-                                        verifiedAccount:employment.usuario.verifiedAccount
+                                        verifiedAccount:employment.usuario.verifiedAccount,
+                                        imgProfile:employment.usuario.imgProfile
                                     }}   
                                     employment={{
                                         id: employment.id,

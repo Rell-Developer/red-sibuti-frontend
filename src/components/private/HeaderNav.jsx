@@ -14,9 +14,9 @@ const HeaderNav = ({height, setOnAgreements, onAgreements}) => {
 
     const [user, setUser] = useState({});
     const [options, setOptions] = useState([
-        { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: true, link:"/inicio"},
-        { id: 2, svg: ServiceSVG, title: "Servicios", selected: true, link:"/inicio/servicios"},
-        { id: 3, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control/empleos" }
+        { id: 1, svg: BriefCaseSVG, title: "Empleos", selected: false, link:"/inicio"},
+        { id: 2, svg: ServiceSVG, title: "Servicios", selected: false, link:"/inicio/servicios"},
+        { id: 3, svg: ConfigSVG, title: "Control", selected: false, link: "/inicio/control" }
     ]);
 
     const navigate = useNavigate();

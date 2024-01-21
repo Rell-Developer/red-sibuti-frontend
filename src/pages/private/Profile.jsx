@@ -273,8 +273,10 @@ const Profile = ({setChatList, chatList}) => {
                                                                 <>
                                                                     <div className="grid grid-cols-12 gap-4">
                                                                         {/* Primer Nombre */}
-                                                                        <div className="flex flex-col col-span-3">
-                                                                            <label htmlFor="firstName" className="font-bold text-lg">Primer Nombre</label>
+                                                                        <div className={`${user?.role.name || user.rol === "company" ? "col-span-full":"col-span-3"} flex flex-col`}>
+                                                                            <label htmlFor="firstName" className="font-bold text-lg">
+                                                                                {user.role.name || user.rol === "company" ? "Nombre de la Empresa":"Primer Nombre"}
+                                                                            </label>
                                                                             <input 
                                                                                 id="firstName"
                                                                                 type="text"
@@ -285,44 +287,51 @@ const Profile = ({setChatList, chatList}) => {
                                                                                 }
                                                                         </div>
 
-                                                                        {/* Segundo Nombre */}
-                                                                        <div className="flex flex-col col-span-3">
-                                                                            <label htmlFor="secondName" className="font-bold text-lg">Segundo Nombre</label>
-                                                                            <input 
-                                                                                id="secondName"
-                                                                                type="text"
-                                                                                className="rounded-xl p-2 border-2 border-black mt-2 shadow-md" 
-                                                                                { ...register('secondName', objRequired) }/>
-                                                                                {
-                                                                                    errors.secondName?.message && <span className="text-red-600">{errors.secondName.message}</span>
-                                                                                }
-                                                                        </div>
+                                                                        {
+                                                                            user.role.name || user.rol !== "company" && (
+                                                                                <>
+                                                                                    {/* Segundo Nombre */}
+                                                                                    <div className="flex flex-col col-span-3">
+                                                                                        <label htmlFor="secondName" className="font-bold text-lg">Segundo Nombre</label>
+                                                                                        <input 
+                                                                                            id="secondName"
+                                                                                            type="text"
+                                                                                            className="rounded-xl p-2 border-2 border-black mt-2 shadow-md" 
+                                                                                            { ...register('secondName', objRequired) }/>
+                                                                                            {
+                                                                                                errors.secondName?.message && <span className="text-red-600">{errors.secondName.message}</span>
+                                                                                            }
+                                                                                    </div>
 
-                                                                        {/* Primer Apellido */}
-                                                                        <div className="flex flex-col col-span-3">
-                                                                            <label htmlFor="lastName" className="font-bold text-lg">Primer Apellido</label>
-                                                                            <input 
-                                                                                id="lastName"
-                                                                                type="text"
-                                                                                className="rounded-xl p-2 border-2 border-black mt-2 shadow-md" 
-                                                                                { ...register('lastName', objRequired) }/>
-                                                                                {
-                                                                                    errors.lastName?.message && <span className="text-red-600">{errors.lastName.message}</span>
-                                                                                }
-                                                                        </div>
+                                                                                    {/* Primer Apellido */}
+                                                                                    <div className="flex flex-col col-span-3">
+                                                                                        <label htmlFor="lastName" className="font-bold text-lg">Primer Apellido</label>
+                                                                                        <input 
+                                                                                            id="lastName"
+                                                                                            type="text"
+                                                                                            className="rounded-xl p-2 border-2 border-black mt-2 shadow-md" 
+                                                                                            { ...register('lastName', objRequired) }/>
+                                                                                            {
+                                                                                                errors.lastName?.message && <span className="text-red-600">{errors.lastName.message}</span>
+                                                                                            }
+                                                                                    </div>
 
-                                                                        {/* Segundo Apellido */}
-                                                                        <div className="flex flex-col col-span-3">
-                                                                            <label htmlFor="secondLastName" className="font-bold text-lg">Segundo Apellido</label>
-                                                                            <input 
-                                                                                id="secondLastName"
-                                                                                type="text"
-                                                                                className="rounded-xl p-2 border-2 border-black mt-2 shadow-md" 
-                                                                                { ...register('secondLastName', objRequired) }/>
-                                                                                {
-                                                                                    errors.secondLastName?.message && <span className="text-red-600">{errors.secondLastName.message}</span>
-                                                                                }
-                                                                        </div>
+                                                                                    {/* Segundo Apellido */}
+                                                                                    <div className="flex flex-col col-span-3">
+                                                                                        <label htmlFor="secondLastName" className="font-bold text-lg">Segundo Apellido</label>
+                                                                                        <input 
+                                                                                            id="secondLastName"
+                                                                                            type="text"
+                                                                                            className="rounded-xl p-2 border-2 border-black mt-2 shadow-md" 
+                                                                                            { ...register('secondLastName', objRequired) }/>
+                                                                                            {
+                                                                                                errors.secondLastName?.message && <span className="text-red-600">{errors.secondLastName.message}</span>
+                                                                                            }
+                                                                                    </div>
+                                                                                </>
+                                                                            )
+                                                                        }
+
 
                                                                         {/* Correo */}
                                                                         <div className="flex flex-col col-span-4">
@@ -467,44 +476,49 @@ const Profile = ({setChatList, chatList}) => {
                                     }
                                 </div>
 
-                                <hr />
 
-                                {/* Servicios */}
                                 {
-                                    user.verifiedToken && user.verifiedAccount && (
-                                        <ServicesList user={user}/>
+                                    user.role.name === "common" || user.rol === "common" && (
+                                        <>
+                                            <hr />
+                                            {/* Servicios */}
+                                            {
+                                                user.verifiedToken && user.verifiedAccount && (
+                                                    <ServicesList user={user}/>
+                                                )
+                                            }
+                                            <hr />
+
+                                            {/* Empleos conseguidos */}
+                                            <div className="grid grid-cols-6">
+                                                <div className="m-5 col-span-6">
+                                                    <h3 className="text-lg uppercase text-color5 font-bold">Empleos Conseguidos en RED-SIBUTI</h3>
+                                                    <div>
+                                                        {
+                                                            employments.map((employment,index) => <EmploymentCard
+                                                                key={index}
+                                                                company={{
+                                                                    id: employment.id,
+                                                                    name:employment.usuario.firstName,
+                                                                    verifiedToken:employment.usuario.verifiedToken,
+                                                                    verifiedAccount:employment.usuario.verifiedAccount
+                                                                }}   
+                                                                employment={{
+                                                                    id: employment.id,
+                                                                    description: employment.description,
+                                                                    create_date: employment.createdAt,
+                                                                    status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
+                                                                    vacancies:employment.vacancies,
+                                                                    postulations:employment.postulations
+                                                                }}
+                                                            />)
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
                                     )
                                 }
-
-                                <hr />
-
-                                {/* Empleos conseguidos */}
-                                <div className="grid grid-cols-6">
-                                    <div className="m-5 col-span-6">
-                                        <h3 className="text-lg uppercase text-color5 font-bold">Empleos Conseguidos en RED-SIBUTI</h3>
-                                        <div>
-                                            {
-                                                employments.map((employment,index) => <EmploymentCard
-                                                    key={index}
-                                                    company={{
-                                                        id: employment.id,
-                                                        name:employment.usuario.firstName,
-                                                        verifiedToken:employment.usuario.verifiedToken,
-                                                        verifiedAccount:employment.usuario.verifiedAccount
-                                                    }}   
-                                                    employment={{
-                                                        id: employment.id,
-                                                        description: employment.description,
-                                                        create_date: employment.createdAt,
-                                                        status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
-                                                        vacancies:employment.vacancies,
-                                                        postulations:employment.postulations
-                                                    }}
-                                                />)
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
                             </>
                         )
                     }
