@@ -14,7 +14,7 @@ const InitHome = () => {
                 </div>
             </header> */}
             <section>
-                <section className="bg-color5 h-96 w-full">
+                <section className="w-full bg-gradient-to-b from-color5 to-sky-700 flex items-center" style={{height:"600px"}}>
                     <HomeCarousel/>
                 </section>
                 <InfoSection />

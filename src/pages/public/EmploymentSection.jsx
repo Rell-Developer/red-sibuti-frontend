@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import '/public/css/custom-leaflet.css'
-// import { FaMapMarkerAlt, FaBriefcase, FaMapMarkedAlt } from "react-icons/fa";
 import clienteAxios from '../../config/axios';
 import Spinner from '../../components/public/Spinner.jsx';
 
@@ -62,17 +61,6 @@ const EmploymentSection = () => {
                 </div>
                 <div className='flex flex-col lg:w-1/2 bg justify-center text-right bg-red-00'>
                     <div className='flex flex-col items-end'>
-                        {/* <div className='flex justify-around w-1/2 mx-auto my-2'>
-                            <div className='p-5 rounded-full shadow border-2'>
-                                <FaBlackTie size={40} color='#38A3A5'/>
-                            </div>
-                            <div className='p-5 rounded-full shadow border-2'>
-                                <FaBriefcase size={40} color='#38A3A5'/>
-                            </div>
-                            <div className='p-5 rounded-full shadow border-2'>
-                                <FaMapMarkedAlt size={40} color='#38A3A5'/>
-                            </div>
-                        </div> */}
                         <p className='text-5xl text-color5 w-10/12 justify-end'>
                             { loading ? "Hay ":`Mas de ${employments.length} `}
                             empleos registrados en {''}
