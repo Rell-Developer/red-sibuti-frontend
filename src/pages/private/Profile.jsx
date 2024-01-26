@@ -12,6 +12,7 @@ import VerifiedSVG from "../../components/public/svg/VerifiedSVG.jsx";
 
 import EmploymentCard from "../../components/private/EmploymentCard.jsx";
 import ServicesList from "../../components/private/lists/ServicesList.jsx";
+import ContactList from "../../components/private/lists/ContactList.jsx";
 
 // Pagina
 const Profile = ({setChatList, chatList}) => {
@@ -273,9 +274,9 @@ const Profile = ({setChatList, chatList}) => {
                                                                 <>
                                                                     <div className="grid grid-cols-12 gap-4">
                                                                         {/* Primer Nombre */}
-                                                                        <div className={`${user?.role.name || user.rol === "company" ? "col-span-full":"col-span-3"} flex flex-col`}>
+                                                                        <div className={`${user?.role?.name === "company" || user?.rol === "company" ? "col-span-full":"col-span-3"} flex flex-col`}>
                                                                             <label htmlFor="firstName" className="font-bold text-lg">
-                                                                                {user.role.name || user.rol === "company" ? "Nombre de la Empresa":"Primer Nombre"}
+                                                                                {user?.role?.name === "company" || user?.rol === "company" ? "Nombre de la Empresa":"Primer Nombre"}
                                                                             </label>
                                                                             <input 
                                                                                 id="firstName"
@@ -288,7 +289,7 @@ const Profile = ({setChatList, chatList}) => {
                                                                         </div>
 
                                                                         {
-                                                                            user.role.name || user.rol !== "company" && (
+                                                                            user?.role?.name === "company" || user?.rol !== "company" && (
                                                                                 <>
                                                                                     {/* Segundo Nombre */}
                                                                                     <div className="flex flex-col col-span-3">
@@ -428,7 +429,11 @@ const Profile = ({setChatList, chatList}) => {
                                                                 className="bg-color6 hover:bg-gray-600 text-white font-bold p-3 mx-2 rounded-lg shadow-lg transition-all uppercase" 
                                                                 onClick={() => {
                                                                     setEditMode(false);
-                                                                    setImgPreview(user.imgProfile || "/public/img/generic-user.png")
+                                                                    if(user.imgProfile) {
+                                                                        setImgPreview(`${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${data.data.imgProfile}`)
+                                                                    } else {
+                                                                        setImgPreview("/public/img/generic-user.png");
+                                                                    }
                                                                 }}
                                                             >
                                                                 Descartar
@@ -478,8 +483,11 @@ const Profile = ({setChatList, chatList}) => {
 
 
                                 {
-                                    user.role.name === "common" || user.rol === "common" && (
+                                    (user?.role?.name === "common" || user?.rol === "common") && (
                                         <>
+                                            <hr />
+                                            {/* Contactos */}
+                                            <ContactList user={user}/>
                                             <hr />
                                             {/* Servicios */}
                                             {
@@ -487,35 +495,41 @@ const Profile = ({setChatList, chatList}) => {
                                                     <ServicesList user={user}/>
                                                 )
                                             }
-                                            <hr />
 
-                                            {/* Empleos conseguidos */}
-                                            <div className="grid grid-cols-6">
-                                                <div className="m-5 col-span-6">
-                                                    <h3 className="text-lg uppercase text-color5 font-bold">Empleos Conseguidos en RED-SIBUTI</h3>
-                                                    <div>
-                                                        {
-                                                            employments.map((employment,index) => <EmploymentCard
-                                                                key={index}
-                                                                company={{
-                                                                    id: employment.id,
-                                                                    name:employment.usuario.firstName,
-                                                                    verifiedToken:employment.usuario.verifiedToken,
-                                                                    verifiedAccount:employment.usuario.verifiedAccount
-                                                                }}   
-                                                                employment={{
-                                                                    id: employment.id,
-                                                                    description: employment.description,
-                                                                    create_date: employment.createdAt,
-                                                                    status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
-                                                                    vacancies:employment.vacancies,
-                                                                    postulations:employment.postulations
-                                                                }}
-                                                            />)
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {
+                                                employments.length > 0 && (
+                                                    <>
+                                                        <hr />
+                                                        {/* Empleos conseguidos */}
+                                                        <div className="grid grid-cols-6">
+                                                            <div className="m-5 col-span-6">
+                                                                <h3 className="text-lg uppercase text-color5 font-bold">Empleos Conseguidos en RED-SIBUTI</h3>
+                                                                <div>
+                                                                    {
+                                                                        employments.map((employment,index) => <EmploymentCard
+                                                                            key={index}
+                                                                            company={{
+                                                                                id: employment.id,
+                                                                                name:employment.usuario.firstName,
+                                                                                verifiedToken:employment.usuario.verifiedToken,
+                                                                                verifiedAccount:employment.usuario.verifiedAccount
+                                                                            }}   
+                                                                            employment={{
+                                                                                id: employment.id,
+                                                                                description: employment.description,
+                                                                                create_date: employment.createdAt,
+                                                                                status:`${employment.status === "open" ? "Abierto":"Cerrado"}`,
+                                                                                vacancies:employment.vacancies,
+                                                                                postulations:employment.postulations
+                                                                            }}
+                                                                        />)
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )
+                                            }
                                         </>
                                     )
                                 }

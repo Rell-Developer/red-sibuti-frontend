@@ -3,29 +3,30 @@ import { useParams } from "react-router-dom";
 import clienteAxios from '../../../config/axios.jsx';
 import Spinner from "../../public/Spinner.jsx";
 
-const ServiceOffering = ({
-        service, 
-        editMode = false, 
-        isNewService = true,
-        serviceList,
+const ContactCard = ({
+        contact, 
+        // editMode = false, 
+        isNewContact = true,
+        contactList,
         isOwner
     }) => {
 
-    const [newService, setNewService] = useState({
-        servicioId: "",
-        description:""
+    const [newContact, setNewContact] = useState({
+        contactTypeId: "",
+        contact:""
     });
     const [createMode, setCreateMode] = useState(false);
-    const [services, setServices] = useState([]);
+    const [contactTypes, setContactTypes] = useState([]);
     const [loading, setLoading] = useState(false);
     const [notification, setNotification] = useState(null);
     const [isActive, setIsActive] = useState(null);
+    const [editMode, setEditMode] = useState(false);
 
     const params = useParams();
 
-    useEffect(() => {
-        setIsActive(service.isActive);
-    }, [])
+    // useEffect(() => {
+    //     setIsActive(service.isActive);
+    // }, [])
     
 
     // Acciones
@@ -33,50 +34,77 @@ const ServiceOffering = ({
     const changeMode = async () => {
         try {
             setCreateMode(true);
-            if (services.length < 1) {
-                const { data } = await clienteAxios('/get-services');
-                setServices(data.result);
-                setLoading(false);
+            if (contactTypes.length < 1) {
+                const { data } = await clienteAxios('/get-contact-types');
+                setContactTypes(data.result);
+            }
+            setLoading(false);
+            // isNewContact = true
+            if (contact?.id > 0) {
+                console.log(contact);
+                setNewContact({
+                    contactTypeId: contact["contact_type"]["id"],
+                    contact: contact["contact"]
+                })
+                setEditMode(true);
             }
         } catch (error) {
             console.error(error.message);
+            setContactTypes([]);
         }
     }
 
     // Guardar la oferta de servicio
     const handleSubmit = async() => {
         try {
+            // Colocamos el spinner de cargando
             setLoading(true);
-
-            const { data } = await clienteAxios.post('/create-service-offering', {...newService, usuarioId: params.id});
-
-            console.log(data);
-
-            // setNotification({
-            //     message: data.message,
-            //     error: data.error
-            // });
+            if (Object.values(newContact).includes("")) {
+                // Colocamos un mensaje en la tarjeta
+                setMessageInCard({
+                    error:true,
+                    message:"Todos los campos son obligatorios"
+                });
+                setTimeout(() => {
+                    setNotification(null);
+                }, 3000);
+                return
+            }
             
-            // setLoading(false);
-            // isNewService = false;
-            // setCreateMode(false);
-
-            // setNewService({
-            //     servicioId: "",
-            //     description:""
-            // });
-
-            setMessageInCard(data);
-
-            setTimeout(() => {
-                service = {
-                    ...newService,
-                    isActive: true,
-                };
-
-                setNotification(null);
-                serviceList.setServices( serv => [...serv, service]);
-            }, 5000);
+            // Realizamos la peticion
+            if (contact.id) {
+                const { data } = await clienteAxios.put(`/update-contact/${contact.id}`, {
+                    ...newContact, 
+                    usuarioId: params.id
+                });
+                // Colocamos un mensaje en la tarjeta
+                setMessageInCard(data);
+                // setNewContact({
+                //     contactTypeId: data.result.contactTypeId,
+                //     contact: data.result.contact
+                // })
+                contact = {
+                    contactTypeId: data.result.contactTypeId,
+                    contact: data.result.contact
+                }
+                setTimeout(() => {
+                    setNotification(null);
+                    setEditMode(false);
+                }, 3000);
+            }else{
+                const { data } = await clienteAxios.post('/create-contact', {
+                    ...newContact, 
+                    usuarioId: params.id
+                });
+                // Colocamos un mensaje en la tarjeta
+                setMessageInCard(data);
+                // Y luego de unos segundos, colocamos el servicio en frontend
+                setTimeout(() => {    
+                    setNotification(null);
+                    // serviceList.setServices( serv => [...serv, service]);
+                    contactList.setContacts( cont => [...cont, {...newContact, id: data.result.id}]);
+                }, 3000);
+            }
         } catch (error) {
             console.error(error.message);
         }
@@ -108,7 +136,7 @@ const ServiceOffering = ({
                 // setMessageInCard(data);
     
                 // setTimeout(() => {
-                //     isNewService = false;
+                //     isnewContact = false;
                 //     setNotification(null)
                 // }, 5000);
             }, 2000);
@@ -125,44 +153,57 @@ const ServiceOffering = ({
         });
         
         setLoading(false);
-        isNewService = false;
+        isNewContact = false;
         setCreateMode(false);
 
-        setNewService({
-            servicioId: "",
-            description:""
+        setNewContact({
+            contactTypeId: "",
+            contact:""
         });
     }
 
     const discardChanges = () => {
-        setNewService({
-            servicioId: "",
-            description:""
+        setNewContact({
+            contactTypeId: "",
+            contact:""
         });
-        setCreateMode(false);
+        if (!contact.id) {
+            setCreateMode(false);
+        }else{
+            setEditMode(false);
+            setCreateMode(false);
+        }
+        
     }
 
-    const createAgreement = async()=> {
-        try {
+    // Borrar contacto
+    const deleteContact = async() => {
+        // Pregunta
+        const areSure = confirm("¿Esta segur@ que quiere eliminar este contacto?");
+        // En caso de que si
+        if (areSure) {
             setLoading(true);
-
-            const dataAgreement = {
-                usuarioId: JSON.parse(sessionStorage.getItem("user")).id,
-                serviceOfferingId: service.id,
-                start_date: new Date()
-            }
-
-            const { data } = await clienteAxios.post("/create-agreement", dataAgreement);
-
+            // Realizamos la peticion http
+            const { data } = await clienteAxios.delete(`/delete-contact/${contact.id}`);
+            // Colocamos un mensaje en la tarjeta
+            // setMessageInCard({
+            //     error:data.error,
+            //     message:data.message
+            // });
+            // Validamos
             if (data.error) {
-                console.log(data.message);
-                setLoading(false);
+                setTimeout(() => {
+                    setNotification(null);
+                }, 3000);
                 return
             }
-            setLoading(false);
-        } catch (error) {
-            console.error("Hubo un error al crear el acuerdo");
-            console.error(error.message);
+            setTimeout(()=> {
+                // setLoading(false);
+                // Filtramos
+                const newContactList = contactList.contacts.filter( cont => cont.id !== contact.id);
+                // Actualizamos el frontend
+                contactList.setContacts(newContactList);
+            },2000);
         }
     }
 
@@ -172,7 +213,7 @@ const ServiceOffering = ({
             <div 
                 className={`
                     col-span-1 shadow-lg rounded-lg border w-5/6 mx-auto grid grid-cols-6 gap-4 p-5 transition-all items-center
-                    ${!isNewService? '':`
+                    ${!isNewContact? '':`
                         ${createMode ? '':`
                             bg-opacity-25 cursor-pointer
                             hover:shadow-xl hover:border-2 hover:border-color4 hover:transform hover:scale-105
@@ -189,52 +230,40 @@ const ServiceOffering = ({
                         <>
                             {/* Si no es el boton de nuevo servicio, es una tarjeta de servicio */}
                             {
-                                !isNewService ? (
+                                !isNewContact && !editMode ? (
                                     // Informacion del servicio
                                     <>
-                                        <div className="col-span-3">
-                                            <h3 className="uppercase">
-                                                { service.servicioName || service.servicio.name}
+                                        <div className="col-span-full">
+                                            <h3 className="uppercase font-bold">
+                                                { contact?.contactName || contact["contact_type"]["name"] }
                                             </h3>
                                         </div>
-                                        <div className="col-span-3">
-                                            <div 
-                                                className={`
-                                                    w-5/6 border rounded-full text-center text-white
-                                                    ${ isActive ? 'bg-color4 border-color3':'bg-red-600 border-red-500'}
-                                                `}
-                                            >
-                                                { isActive ? 'Activo':'Inactivo'}
-                                            </div>
+                                        <div className="col-span-full">
+                                            <p>
+                                                { contact["contact"]}
+                                            </p>
                                         </div>
-                                        <div className="col-span-6">
-                                        {
-                                            isOwner ? (
-                                                <>
-                                                    <button
-                                                        className={`${!isActive ? "bg-color4":"bg-red-600"}  
-                                                            text-white font-bold rounded p-2 mx-auto text-sm uppercase`
-                                                        }
-                                                        onClick={() => isActive ? changeStatus(false):changeStatus(true)}
-                                                    >
-                                                        {isActive ? "Dejar de Ofrecer este Servicio":"Habilitar Servicio"}  
-                                                    </button>
-                                                </>
-                                            ):(
-                                                <>
-                                                    {
-                                                        isActive && (
-                                                            <button 
-                                                                onClick={() => createAgreement()}
-                                                                className="bg-color4 text-white font-bold rounded p-2 mx-auto text-sm uppercase w-full"
-                                                            >
-                                                                Realizar Acuerdo
-                                                            </button>
-                                                        )
-                                                    }
-                                                </>
-                                            )
-                                        }
+                                        <div className="col-span-full">
+                                            {
+                                                isOwner && (
+                                                    <>
+                                                        <button
+                                                            className={`${!isActive ? "bg-color4":"bg-red-600"}  
+                                                                text-white font-bold rounded p-2 mx-auto text-sm uppercase w-full`
+                                                            }
+                                                            onClick={() => changeMode()}
+                                                        >
+                                                            Editar
+                                                        </button>
+                                                        <button
+                                                            className={`bg-red-600 text-white font-bold rounded p-2 mx-auto text-sm uppercase w-full my-2`}
+                                                            onClick={() => deleteContact()}
+                                                        >
+                                                            Eliminar
+                                                        </button>
+                                                    </>
+                                                )
+                                            }
                                         </div>
                                     </>
                                 ):(
@@ -244,10 +273,10 @@ const ServiceOffering = ({
                                                 <>
                                                     {
                                                         !notification ? (
-                                                            // El boton de nuevo servicio
+                                                            // El boton de nuevo contacto
                                                             <div className="col-span-full text-center" onClick={() => changeMode()}>
                                                                 <h3 className="uppercase">
-                                                                    Ofrecer un nuevo servicio
+                                                                    Agrega un nuevo contacto
                                                                 </h3>
                                                                 <div className="flex justify-center">
                                                                     <svg width="40" dataSlot="icon" aria-hidden="true" fill="#38A3A5" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -282,30 +311,33 @@ const ServiceOffering = ({
                                                         // <div className="col-span-full">
                                                         <>
                                                             <div className="w-full flex flex-col my-2">
-                                                                <label htmlFor="service" className="font-bold">Servicio</label>
+                                                                <label htmlFor="contact" className="font-bold">Tipo de Contacto</label>
                                                                 <select 
-                                                                    id="service" 
-                                                                    name="service" 
+                                                                    id="contact" 
+                                                                    name="contact" 
                                                                     className="bg-white border rounded p-1 my-1"
-                                                                    value={newService.servicioId}
-                                                                    onChange={e => setNewService({...newService, servicioId: e.target.value, servicioName: e.target.selectedOptions[0].textContent})}
+                                                                    value={newContact.contactTypeId}
+                                                                    onChange={e => setNewContact({
+                                                                        ...newContact, 
+                                                                        contactTypeId: e.target.value, 
+                                                                        contactName: e.target.selectedOptions[0].textContent
+                                                                    })}
                                                                 >
-                                                                    <option value="">Seleccione un Servicio</option>
+                                                                    <option value="">Seleccione un tipo de contacto</option>
                                                                     {
-                                                                        services.map( serv => <option value={serv.id}>{serv.name}</option>)
+                                                                        contactTypes.map( cont => <option value={cont.id}>{cont.name}</option>)
                                                                     }
                                                                 </select>
                                                             </div>
                                                             <div>
-                                                                <label htmlFor="description" className="font-bold">Descripcion</label>
-                                                                <textarea 
-                                                                    id="description" 
-                                                                    name="description" 
-                                                                    rows="2" 
+                                                                <label htmlFor="contact" className="font-bold">Contacto</label>
+                                                                <input 
+                                                                    id="contact" 
+                                                                    name="contact" 
                                                                     className="w-full bg-white border rounded p-2 my-1"
-                                                                    value={newService.description}
-                                                                    onChange={ e => setNewService({...newService, description: e.target.value})}
-                                                                ></textarea>
+                                                                    value={newContact?.contact}
+                                                                    onChange={ e => setNewContact({...newContact, contact: e.target.value})}
+                                                                />
                                                             </div>
                                                             <button 
                                                                 className="bg-color4 font-bold text-white rounded px-3 py-1 w-full"
@@ -329,4 +361,4 @@ const ServiceOffering = ({
     )
 }
 
-export default ServiceOffering
+export default ContactCard;

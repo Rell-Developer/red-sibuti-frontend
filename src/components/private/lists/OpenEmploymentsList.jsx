@@ -1,18 +1,48 @@
 // Importaciones
 import { useState, useEffect } from "react";
-import clienteAxios from "../../../config/axios.jsx";
+import clienteAxios, { configAuth } from "../../../config/axios.jsx";
 import EmploymentCard from "../EmploymentCard.jsx";
 import Spinner from "../../public/Spinner.jsx";
+import { useNavigate } from "react-router-dom";
 // Lista
 const OpenEmploymentsList = () => {
     // States
     const [employments, setEmployments] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
     // Al renderizar la lista
     useEffect(() => {
         const searchEmployments = async () =>{
             if (!employments || employments.length == 0) {
-                let {data} = await clienteAxios("/get-open-employments");
+                let user = sessionStorage.getItem("user");
+
+                if (!user) {
+                    return navigate("/iniciar-sesion");
+                }
+
+                if (!JSON.parse(user)) {
+                    return navigate("/iniciar-sesion");
+                }else{
+                    user = JSON.parse(user);
+                }
+
+                console.log(user);
+
+                let {data} = await clienteAxios("/get-open-employments", {
+                    headers:{
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${user.authToken}`
+                    }
+                });
+
+                console.log(data);
+
+                if (data.error) {
+                    if (!data.token) {
+                        return navigate("/iniciar-sesion");
+                    }
+                }
+
                 // console.log(data);
                 setEmployments(data.data);
                 setLoading(false)

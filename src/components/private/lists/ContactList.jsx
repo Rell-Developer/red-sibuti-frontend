@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import Spinner from "../../public/Spinner.jsx";
 import clienteAxios from "../../../config/axios";
-import ServiceOffering from "../cards/ServiceOffering.jsx";
+import ContactCard from "../cards/ContactCard.jsx";
 
-const ServicesList = ({user}) => {
+const ContactList = ({ user }) => {
 
-    // Servicios Ofrecidos
-    const [services, setServices] = useState([]);
+    // Lista de Contacto
+    const [contacts, setContacts] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
 
-        const searchServices = async () => {
+        const searchContacts = async () => {
             try {
-                const { data } = await clienteAxios(`/get-service-offerings/${user.id}`);
+                const { data } = await clienteAxios(`/get-user-contacts/${user.id}`);
 
                 // console.log(data);
                 if (data.error) {
@@ -22,7 +22,7 @@ const ServicesList = ({user}) => {
                 }
 
                 if (data.result.length > 0) {
-                    setServices(data.result);
+                    setContacts(data.result);
                 }
                 return setLoading(false);
             } catch (error) {
@@ -31,15 +31,14 @@ const ServicesList = ({user}) => {
             }
         };
 
-        searchServices();
+        searchContacts();
     }, [])
-    
 
     return (
         <>
             <section className="my-5 grid-cols-6">
                 <div className="m-5 col-span-6">
-                    <h3 className="text-lg uppercase text-color5 font-bold">Servicios</h3>
+                    <h3 className="text-lg uppercase text-color5 font-bold">Contactos</h3>
                     {
                         loading ? (
                             <Spinner />
@@ -47,14 +46,15 @@ const ServicesList = ({user}) => {
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-5">
                                     {
-                                        services.length > 0 ? (
+                                        contacts.length > 0 ? (
                                             <>
                                                 {
-                                                    services.map( serv => 
-                                                        <ServiceOffering 
-                                                            service={serv} 
-                                                            serviceList={{services, setServices}} 
-                                                            isNewService={false}
+                                                    contacts.map( cont => 
+                                                        <ContactCard 
+                                                            key={cont.id}
+                                                            contact={cont} 
+                                                            contactList={{contacts, setContacts}} 
+                                                            isNewContact={false}
                                                             isOwner={user.id === JSON.parse(sessionStorage.getItem("user")).id}/>
                                                     )
                                                 }
@@ -64,7 +64,7 @@ const ServicesList = ({user}) => {
                                                 {
                                                     user.id !== JSON.parse(sessionStorage.getItem("user")).id && (
                                                         <div className="col-span-full text-center uppercase">
-                                                            <h3>Aún no ha ofrecido algun servicio</h3>
+                                                            <h3>Aún no ha registrado un método de contacto</h3>
                                                         </div>
                                                     )
                                                 }
@@ -73,11 +73,11 @@ const ServicesList = ({user}) => {
                                     }
 
                                     {
-                                        (user.id === JSON.parse(sessionStorage.getItem("user")).id && services.length < 6) && (
-                                            <ServiceOffering 
-                                                service={{}} 
-                                                serviceList={{services, setServices}} 
-                                                isNewService={true}/>
+                                        (user.id === JSON.parse(sessionStorage.getItem("user")).id && contacts.length < 6) && (
+                                            <ContactCard 
+                                                contact={{}} 
+                                                contactList={{contacts, setContacts}} 
+                                                isNewContact={true}/>
                                         )
                                     }
                                 </div>
@@ -90,4 +90,4 @@ const ServicesList = ({user}) => {
     )
 }
 
-export default ServicesList;
+export default ContactList;

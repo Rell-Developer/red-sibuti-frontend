@@ -1,7 +1,7 @@
 // Importaciones
 import { useEffect, useState } from "react";
 // import EmploymentCard from "../../components/private/EmploymentCard.jsx";
-import clienteAxios from "../../config/axios.jsx";
+import clienteAxios, { configAuth } from "../../config/axios.jsx";
 import dateTransform from "../../hooks/dateTransform.js";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 
@@ -47,7 +47,9 @@ const SecondLayout = ({chatList, setChatList, onAgreements}) => {
             try {
                 // console.log("Vamos a buscar las conversaciones");
                 // console.log(user);
-                const { data } = await clienteAxios(`/get-conversations/${user.id || JSON.parse(sessionStorage.getItem("user")).id}`);
+                let userData = JSON.parse(sessionStorage.getItem("user"))
+                // const config = configAuth();
+                const { data } = await clienteAxios(`/get-conversations/${userData.id}`);
                 setConversationList(data.data)
             } catch (error) {
                 console.error(error.message);
@@ -64,14 +66,14 @@ const SecondLayout = ({chatList, setChatList, onAgreements}) => {
     
     const openConversation = async(otherUser) => {
         let userJSON = JSON.parse(sessionStorage.getItem("user"));
-
+        const config = configAuth();
         // Buscamos la conversacion
         let { data } = await clienteAxios.post("/get-conversation", {
             usuarioId: userJSON.id,
             toUser: otherUser.id,
-        });
+        }, config);
 
-        console.log(data);
+        // console.log(data);
 
         // Verificamos si hay chats abiertos
         if (chatList.length > 0) {
