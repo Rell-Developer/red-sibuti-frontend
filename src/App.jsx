@@ -34,6 +34,10 @@ import ActiveServicesList from './components/private/lists/ActiveServicesList.js
 import ServiceForm from './components/private/forms/ServiceForm.jsx';
 import ServiceOfferingForm from './components/private/forms/ServiceOfferingForm.jsx';
 import RatingForm from './components/private/forms/RatingForm.jsx';
+import ContactForm from './components/private/forms/ContactForm.jsx';
+import AdminContactList from './pages/private/admin/AdminContactList.jsx';
+import ContactTypeList from './pages/private/admin/ContactTypeList.jsx';
+import ContactTypeForm from './components/private/forms/ContactTypeForm.jsx';
 
 // Funcion a retornar
 function App() {
@@ -83,6 +87,18 @@ function App() {
               {/* Usuarios */}
               <Route path='usuarios' element={<Outlet/>}>
                 <Route index element={<UsersList/>}/>
+              </Route>
+              {/* Contactos */}
+              <Route path="contactos" element={<Outlet/>}>
+                <Route index element={<AdminContactList/>}/>
+                <Route path='nuevo' element={<ContactForm/>}/>
+                <Route path=':id' element={<ContactForm/>}/>
+              </Route>
+              {/* Tipos de contacto */}
+              <Route path="tipos-contactos" element={<Outlet/>}>
+                <Route index element={<ContactTypeList/>}/>
+                <Route path='nuevo' element={<ContactTypeForm/>}/>
+                <Route path=':id' element={<ContactTypeForm/>}/>
               </Route>
               {/* Postulaciones */}
               <Route path='postulaciones' element={<Outlet/>}>

@@ -1,55 +1,67 @@
 import { Link, Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Spinner from "../../components/public/Spinner.jsx";
+import clienteAxios from "../../config/axios.jsx";
 // Layout
 const ControlLayout = () => {
     // States
     const [user, setUser] = useState({});
+    const [options, setOptions] = useState([]);
     // al renderizar el layout
     useEffect(()=>{
         let userJSON = sessionStorage.getItem('user');
         setUser(JSON.parse(userJSON));
-    }, [])
+
+        const searchOptions = async()=> {
+            try {
+                const optionsJSON = await fetch("/src/assets/json/options.json").then( res => res.json());
+                // console.log(optionsJSON);
+                setOptions(optionsJSON);
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+        searchOptions();
+    }, []);
     // Retorno del componente
     return (
         <section className="flex w-full h-full">
             <div className="w-1/5">
                 <nav className="flex flex-col mx-auto w-5/6 my-5">
                     {
-                        user.rol === "admin" && (
-                            <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control">
-                                <p className="font-bold text-white mx-2 uppercase">Estadisticas</p>
-                            </Link>
-                        )
-                    }
-
-                    <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/empleos">
-                        {/* <BriefCaseSVG fill={"#fff"}/> */}
-                        <p className="font-bold text-white mx-2">EMPLEOS</p>
-                    </Link>
-                    {/* Apartado solo para administradores */}
-                    {
-                        user.rol === "admin" && (
+                        options.length > 0 ? (
                             <>
-                                <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/usuarios">
-                                    <p className="font-bold text-white mx-2 uppercase">Usuarios</p>
-                                </Link>
-                                <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/postulaciones">
-                                    <p className="font-bold text-white mx-2 uppercase">Postulaciones</p>
-                                </Link>
-                                <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/cargos">
-                                    <p className="font-bold text-white mx-2 uppercase">Cargos</p>
-                                </Link>
-                                <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/servicios">
-                                    <p className="font-bold text-white mx-2 uppercase">Servicios</p>
-                                </Link>
-                                <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/oferta-servicios">
-                                    <p className="font-bold text-white mx-2 uppercase">Oferta de Servicios</p>
-                                </Link>
-                                <Link className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" to="/inicio/control/calificaciones">
-                                    <p className="font-bold text-white mx-2 uppercase">Calificaciones</p>
-                                </Link>
+                                {
+                                    options.map( opt => 
+                                        <>
+                                            {
+                                                opt.admin ? (
+                                                    <>
+                                                        {
+                                                            user.rol === "admin" && 
+                                                                <Link 
+                                                                    className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" 
+                                                                    to={opt.to}
+                                                                >
+                                                                    <p className="font-bold text-white mx-2 uppercase">{opt.name}</p>
+                                                                </Link>
+                                                        }
+                                                    </>
+                                                ):(
+                                                    <Link 
+                                                        className="flex items-center bg-color4 rounded p-4 shadow my-2 cursor-pointer hover:shadow-lg transition-all" 
+                                                        to={opt.to}
+                                                    >
+                                                        <p className="font-bold text-white mx-2 uppercase">{opt.name}</p>
+                                                    </Link>
+                                                )
+                                            }
+                                        </>
+                                    )
+                                }
                             </>
-                        )
+                        ): <Spinner/>
                     }
                 </nav>
             </div>

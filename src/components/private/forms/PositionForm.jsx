@@ -47,7 +47,7 @@ const PositionForm = () => {
         }
 
         setLoading(false);
-    });
+    },[]);
     // Navegador
     const navigate = useNavigate();
     

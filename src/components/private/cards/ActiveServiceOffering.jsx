@@ -14,7 +14,7 @@ const ActiveServiceOffering = ({service}) => {
             className={`
                 bg-white border border-color4 shadow-lg rounded-lg p-5 text-center transition-all transform
                 h-72 col-span-full 
-                ${viewRatings ? `lg:col-span-full row-span-2`: `${viewService ? "lg:col-span-6 cursor-pointer overflow-scroll":"lg:col-span-3 cursor-pointer overflow-scroll row-span-1"}`}
+                ${viewRatings ? `lg:col-span-full row-span-2`: `${viewService ? "lg:col-span-6 cursor-pointer overflow-scroll":"lg:col-span-4 cursor-pointer overflow-scroll row-span-1"}`}
             `}
             onClick={() => setViewService(!viewService)}
         >
@@ -32,7 +32,8 @@ const ActiveServiceOffering = ({service}) => {
                             <img 
                                 src={ service.usuario.imgProfile ? `${import.meta.env.VITE_BACKEND_PUBLIC_IMAGES}${service.usuario.imgProfile}`:"/public/img/generic-user.png"}
                                 alt="profile-img" 
-                                width={"100"} 
+                                width={"80"} 
+                                style={{height:"80px"}}
                                 className='rounded-full border-color4 border-2 my-2 mx-auto hover:shadow-lg hover:border-4 transition-all'
                             />
                         </Link>

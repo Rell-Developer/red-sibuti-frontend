@@ -1,4 +1,5 @@
 import { GiStarFormation } from "react-icons/gi";
+import { Link } from "react-router-dom";
 const InfoSection = () => {
     return (
         <section className='w-full bg-color4 p-5 h-96 flex justify-center'>
@@ -10,9 +11,9 @@ const InfoSection = () => {
                             Aqui!
                         </span>
                     </p>
-                    <a href='/iniciar-sesion' className='bg-color1 w-28 p-2 shadow text-center rounded my-5'>
+                    <Link to='/iniciar-sesion' className='bg-color1 w-28 p-2 shadow text-center rounded my-5'>
                         Unirme
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="flex flex-col justify-center items-center mx-auto">

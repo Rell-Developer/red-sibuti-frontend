@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { FaHandshake } from "react-icons/fa6";
 import clienteAxios from "../../config/axios";
+import { Link } from "react-router-dom";
 const ServicesSection = () => {
 
     const [services, setServices] = useState({});
@@ -29,12 +30,12 @@ const ServicesSection = () => {
                             Ofrecer sus Servicios
                         </span>
                     </p>
-                    <a 
-                        href='/iniciar-sesion' 
+                    <Link 
+                        to='/iniciar-sesion' 
                         className='bg-color1 flex self-end justify-center w-1/2 px-5 py-2 shadow font-bold rounded my-10 uppercase'
                     >
                         Dar el paso
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="col-span-4 p-5 shadow border bg-white rounded-full mx-auto">
@@ -53,12 +54,12 @@ const ServicesSection = () => {
                         de los mismos
                     </p>
                     <div className="w-full grid grid-cols-12">
-                        <a 
-                            href='/iniciar-sesion' 
+                        <Link 
+                            to='/iniciar-sesion' 
                             className='bg-color1 px-5 py-2 shadow font-bold rounded my-10 uppercase col-start-6 col-end-12'
                         >
                             Buscar Ofertantes
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { Autoplay, Pagination} from 'swiper/modules';
 import 'swiper/css';
 import { FaTools, FaBriefcase, FaMapMarkedAlt, FaHandHoldingHeart } from "react-icons/fa";
 import { MdMoneyOff } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const HomeCarousel = () => {
 
@@ -151,12 +152,12 @@ const HomeCarousel = () => {
                                         <h2 className="text-white text-6xl mb-5">
                                             ¿Que esperás para ingresar? {""}
                                         </h2>
-                                        <a 
+                                        <Link 
                                             href="/iniciar-sesion" 
                                             className="bg-white px-4 py-2 font-bold uppercase text-black rounded w-1/4 text-center"
                                         >
                                             haz clic aquí
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

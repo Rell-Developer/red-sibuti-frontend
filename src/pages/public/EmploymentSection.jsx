@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import '/public/css/custom-leaflet.css'
 import clienteAxios from '../../config/axios';
 import Spinner from '../../components/public/Spinner.jsx';
+import { Link } from 'react-router-dom';
 
 const EmploymentSection = () => {
     const [employments, setEmployments] = useState([]);
@@ -69,12 +70,12 @@ const EmploymentSection = () => {
                             </span>
                         </p>
                     </div>
-                    <a 
-                        href='/iniciar-sesion' 
+                    <Link 
+                        to='/iniciar-sesion' 
                         className='bg-color3 text-white flex self-end justify-center w-48 py-2 px-5 shadow font-bold rounded my-10 uppercase'
                     >
                         Buscar Empleos
-                    </a>
+                    </Link>
                 </div>
             </div>
         </section>
