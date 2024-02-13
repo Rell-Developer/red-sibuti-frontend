@@ -70,12 +70,20 @@ const EmploymentSection = () => {
                             </span>
                         </p>
                     </div>
-                    <Link 
-                        to='/iniciar-sesion' 
-                        className='bg-color3 text-white flex self-end justify-center w-48 py-2 px-5 shadow font-bold rounded my-10 uppercase'
-                    >
-                        Buscar Empleos
-                    </Link>
+                    <div className='flex justify-end'>
+                        <Link 
+                            to='/iniciar-sesion' 
+                            className='bg-color3 text-white flex mx-2 py-2 px-5 shadow font-bold rounded my-10 uppercase'
+                        >
+                            Buscar Empleos
+                        </Link>
+                        <Link 
+                            to='/empresa/registrarse' 
+                            className='bg-color3 text-white flex mx-2 py-2 px-5 shadow font-bold rounded my-10 uppercase'
+                        >
+                            Aperturar un Empleo
+                        </Link>
+                    </div>
                 </div>
             </div>
         </section>

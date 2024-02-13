@@ -54,8 +54,8 @@ const ViewEmployment = () => {
             user = JSON.parse(user);
 
             let {data} = await clienteAxios.post("/apply-employment", {employment_id: params.id, user_id: user.id});
-            console.log(user);
-            console.log(data);
+            // console.log(user);
+            // console.log(data);
             setEmployment({...employment, isPostulated: true});
             setAlerta({error:data.error, message: data.message});
             setLoading(false);
@@ -143,12 +143,22 @@ const ViewEmployment = () => {
                                                         {/* ubicacion */}
                                                         {/* <p className="text-sm">San Juan de los Morros, Guarico, Venezuela</p> */}
                                                         <small className="text-sm text-gray-800">
-                                                            { employment.parish_name ? 
+                                                            {/* { employment.parish_name ? 
                                                                 employment.parish_name !== "" ? 
                                                                     employment.parish_name: employment.municipality_name
                                                                 : employment.municipality_name
                                                             }, 
                                                             {employment.municipality_name}, 
+                                                            {employment.state_name} */}
+                                                            { employment.parish_name && 
+                                                                employment.parish_name !== "" && 
+                                                                    `${employment.parish_name},`
+                                                            } 
+                                                            {
+                                                                employment.municipality_name && 
+                                                                    employment.municipality_name !== "" && 
+                                                                        `${employment.municipality_name},`
+                                                            }
                                                             {employment.state_name}
                                                         </small>
                                                     </div>

@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import dateTransform from "../../hooks/dateTransform.js";
 import VerifiedSVG from "../public/svg/VerifiedSVG.jsx";
+// import ubicationNameTransform from "../../hooks/ubicationNameTransform.js";
 // Componente
 const EmploymentCard = ({
         company,
@@ -9,10 +10,21 @@ const EmploymentCard = ({
     }) => {
     // Declaracion del navegador
     const navigate = useNavigate();
+
+    // Transformar la ubicacion del lugar
+    const ubicationNameTransform = async(ubication)=>{
+        let name = '';
+        console.log(ubication);
+        // name = (ubication?.parish_name ? ubication?.parish_name:'') + name;
+        // name = (ubication?.municipality_name ? ubication?.municipality_name:'') + name;
+
+        return name + ubication?.state_name;
+        return 'ejemplo'
+    }
     // Retorno
     return (
         <>
-            <div className="bg-white rounded-lg shadow-lg p-5 flex mx-auto my-5" style={{width:"95%"}}>
+            <div className="bg-white border rounded-lg shadow-lg p-5 flex mx-auto my-5" style={{width:"95%"}}>
                 <div className="grid grid-cols-4 gap-2 w-full items-center">
                     <div className="flex col-span-2">
                         <img 
@@ -36,12 +48,15 @@ const EmploymentCard = ({
                             <div className="flex flex-col">
                                 <p className="text-sm">{employment.description}</p>
                                 <small className="text-gray-800" style={{fontSize: "11px"}}>
-                                    { employment.parish_name ? 
-                                        employment.parish_name !== "" ? 
-                                            employment.parish_name: employment.municipality_name
-                                        : employment.municipality_name
-                                    }, 
-                                    {employment.municipality_name}, 
+                                    { employment.parish_name && 
+                                        employment.parish_name !== "" && 
+                                            `${employment.parish_name},`
+                                    } 
+                                    {
+                                        employment.municipality_name && 
+                                            employment.municipality_name !== "" && 
+                                                `${employment.municipality_name},`
+                                    }
                                     {employment.state_name}
                                 </small>
                                 <em className="text-sm font-bold text-slate-500">{dateTransform(employment.create_date)}</em>

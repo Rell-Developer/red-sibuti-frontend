@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import VerifiedSVG from "../../public/svg/VerifiedSVG.jsx";
 import dateTransfor from "../../../hooks/dateTransform.js";
 
 const PublicCalification = ({calification}) => {

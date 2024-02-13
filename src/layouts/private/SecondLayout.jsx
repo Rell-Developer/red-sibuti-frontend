@@ -124,7 +124,9 @@ const SecondLayout = ({chatList, setChatList, onAgreements}) => {
                                     <p className="mt-2 text-sm">{user.fullName || user.name}</p>
                                 </div>
                                 <div className="text-white mt-4">
-                                    <p className="uppercase font-bold text-lg">EDAD</p>
+                                    <p className="uppercase font-bold text-md">
+                                        { user.rol === 'company' ? 'AÑOS TRABAJANDO': 'EDAD'}
+                                    </p>
                                     <p className="mt-2 text-sm">{ `${ new Date().getFullYear() - new Date(user.dateBirth).getFullYear()} años`}</p>
                                 </div>
                                 {/* <div className="text-white mt-4">
@@ -187,6 +189,7 @@ const SecondLayout = ({chatList, setChatList, onAgreements}) => {
                                                                 alt="profile-img" 
                                                                 width={50}
                                                                 className="rounded-full col-span-3"
+                                                                style={{height: '50px !important', width: '50px !important'}}
                                                             />
                                                             <h4 className="text-lg font-bold col-span-9">{conversation.otherUser.name}</h4>
                                                         </div>

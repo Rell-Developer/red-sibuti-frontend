@@ -68,7 +68,10 @@ const EmploymentForm = () => {
                     let { data:{data} } = await clienteAxios.post(`/get-employments/${params.id}`);
                     console.log(data);
     
-                    setPosition(data.cargo.name);
+                    setPosition({
+                        id: data?.cargo?.id,
+                        name: data?.cargo?.name
+                    });
                     setEstatus(data.status);
                     setVacancies(data.vacancies);
                     setDescription(data.description);
@@ -100,7 +103,7 @@ const EmploymentForm = () => {
             getId();
         }else{
             // Como es modo edicion o creacion, invocamos a la funcion de estructura de ubicacion
-            searchUbications()
+            searchUbications();
             // Establecemos el modo edicion
             setEditMode(true);
             setId(0);
@@ -136,11 +139,20 @@ const EmploymentForm = () => {
 
         try {
             let user = JSON.parse(sessionStorage.getItem('user'));
-            let {data} = await clienteAxios.post('/create-employment', {cargoId: position.id, status, vacancies, description, usuarioId: user.id, location, ubication});
+            let info;
+            if (params.id) {
+                console.log(ubication);
+                console.log(location);
+                let {data} = await clienteAxios.put(`/update-employment/${params.id}`, {cargoId: position.id, status, vacancies, description, usuarioId: user.id, location, ubication});
+                info = data;
+            }else{
+                let {data} = await clienteAxios.post('/create-employment', {cargoId: position.id, status, vacancies, description, usuarioId: user.id, location, ubication});
+                info = data;
+            }
 
-            console.log(data);
+            console.log(info);
             setLoading(false)
-            setAlerta(data);
+            setAlerta(info);
             setQueryStatus(true);
         } catch (error) {
             console.log(error.message);
@@ -166,17 +178,16 @@ const EmploymentForm = () => {
 
     const searchUbications = async () =>{
         try {
-            let {data: {token}} = await DPTUserLogin();
-            // console.log(token);
-            setToken(token)
-            let statesDPT = await DPTaxios(`v1/listadoEntidad?token=${token}`);
-            // console.log(statesDPT.data.data);
-            let newStates = statesDPT.data.data.map(state => {
+            // Obtenemos los estados
+            let { data } = await clienteAxios.get('get-states');
+            // Transformamos la data para la presentacion HTML
+            let newStates = data.result.map(state => {
                 return {
-                    id: state.cod_entidad_ine,
-                    name: state.entidad_ine
+                    id: state.code2,
+                    name: state.name
                 }
             });
+            // Establecemos los estados
             setStates(newStates);
         } catch (error) {
             console.log('Hubo un error al buscar los estados, municipios y parroquias');
@@ -223,17 +234,18 @@ const EmploymentForm = () => {
                 state_name: target.selectedOptions[0].textContent
             });
 
-            console.log(target);
+            // console.log(target);
 
             // Nos Logeamos para obtener el token de consulta y 
             // let { token } = await DPTUserLogin();
-            let { data } = await DPTaxios(`v1/listadoMunicipio?token=${token}&&codEntidad=${target.value}`);
+            let { data } = await clienteAxios(`get-municipalities/${target.value}`)
+            // let { data } = await DPTaxios(`v1/listadoMunicipio?token=${token}&&codEntidad=${target.value}`);
             console.log(data);
 
-            let municips = data.data.map( m =>{
+            let municips = data.result.map( m =>{
                 return {
-                    id: m.cod_municipio_ine,
-                    name: m.municipio_ine
+                    id: m.code2,
+                    name: m.name
                 }
             });
             setMunicipalities(municips)
@@ -253,13 +265,14 @@ const EmploymentForm = () => {
 
             // Nos Logeamos para obtener el token de consulta y 
             // let { token } = await DPTUserLogin();
-            let { data } = await DPTaxios(`v1/listadoParroquia?token=${token}&&codEntidad=${ubication.municipality_id}&&codMunicipio=${target.value}`);
+            // let { data } = await DPTaxios(`v1/listadoParroquia?token=${token}&&codEntidad=${ubication.municipality_id}&&codMunicipio=${target.value}`);
+            let { data } = await clienteAxios(`get-parishes/${target.value}`)
             // console.log(data);
 
-            let parroq = data.data.map( m =>{
+            let parroq = data.result.map( m =>{
                 return {
-                    id: m.cod_parroquia_ine,
-                    name: m.parroquia_ine
+                    id: m.code2,
+                    name: m.name
                 }
             });
             setParishes(parroq)
@@ -325,14 +338,19 @@ const EmploymentForm = () => {
                                                                 }
                                                             </select>
                                                         ):(
-                                                            <p>{position}</p>
+                                                            <p>{position?.name}</p>
                                                         )}
                                                     </div>
             
                                                     <div className="col-span-6 lg:col-span-2 flex flex-col">
                                                         <label htmlFor="status" className="font-bold">Estatus</label>
                                                         {editMode ? (
-                                                            <select name="status" id="status" className="bg-white p-3 border-2 rounded-lg" value={status} onChange={e => setEstatus(e.target.value)}>
+                                                            <select 
+                                                                id="status" 
+                                                                name="status" 
+                                                                className="bg-white p-3 border-2 rounded-lg" 
+                                                                value={status} 
+                                                                onChange={e => setEstatus(e.target.value)}>
                                                                 <option value="">Seleccione un estatus</option>
                                                                 <option value="open">Abierto</option>
                                                                 <option value="closed">Cerrado</option>
@@ -348,7 +366,7 @@ const EmploymentForm = () => {
                                                                 {/* Input de las vacantes */}
                                                                 <InputForm props={{ 
                                                                     classes:{
-                                                                        divClasses:'col-span-2 flex flex-col',
+                                                                        divClasses:'col-span-6 lg:col-span-2 flex flex-col',
                                                                         labelClasses:'font-bold',
                                                                         inputClasses:'bg-white p-3 border-2 rounded-lg'
                                                                     },
@@ -361,7 +379,7 @@ const EmploymentForm = () => {
                                                             </>
                                                         ):(
                                                             <>
-                                                                <div className="col-span-2">
+                                                                <div className="col-span-6 lg:col-span-2 flex flex-col">
                                                                     <p className="font-bold">Vacantes</p>
                                                                     <p>{vacancies}</p>
                                                                 </div>
@@ -392,7 +410,7 @@ const EmploymentForm = () => {
                                                         <h3 className="text-xl font-bold">Datos de Ubicacion</h3>
 
                                                         <div className="w-full h-full grid grid-cols-9 justify-around my-5">
-                                                            <div className="flex flex-col col-span-1 lg:col-span-3">
+                                                            <div className="flex flex-col col-span-full lg:col-span-3">
                                                                 <p className="font-bold">Estado</p>
                                                                 {
                                                                     !editMode ? (
@@ -411,13 +429,13 @@ const EmploymentForm = () => {
                                                                     )
                                                                 }
                                                             </div>
-                                                            <div className="flex flex-col col-span-1 lg:col-span-3">
+                                                            <div className="flex flex-col col-span-full lg:col-span-3">
                                                                 <p className="font-bold">
                                                                     Municipio
                                                                 </p>
                                                                 {
                                                                     !editMode ? (
-                                                                        <p>{ubication.municipality_name}</p>
+                                                                        <p>{ubication?.municipality_name}</p>
                                                                     ):(
                                                                         <>
                                                                             {
@@ -438,18 +456,18 @@ const EmploymentForm = () => {
                                                                     )
                                                                 }
                                                             </div>
-                                                            <div className="flex flex-col col-span-1 lg:col-span-3">
+                                                            <div className="flex flex-col col-span-full lg:col-span-3">
                                                                 <p className="font-bold">
                                                                     Parroquia
                                                                 </p>
                                                                 {
                                                                     !editMode ? (
                                                                         <p>{
-                                                                            ubication.parish_name ? 
-                                                                                ubication.parish_name !== "" ? 
-                                                                                    ubication.parish_name : ubication.municipality_name 
+                                                                            ubication?.parish_name ? 
+                                                                                ubication?.parish_name !== "" ? 
+                                                                                    ubication?.parish_name : ubication?.municipality_name 
                                                                                 : 
-                                                                                ubication.municipality_name
+                                                                                ubication?.municipality_name
                                                                             }
                                                                         </p>
                                                                     ):(
@@ -495,12 +513,38 @@ const EmploymentForm = () => {
                                                 </div>
                                                     
                                                 {editMode ? (
-                                                        <button className="bg-color4 rounded-lg shadow-lg text-white font-bold p-3" type="submit" onClick={handleSubmit}>GUARDAR</button>
+                                                        <>
+                                                            <button className="bg-color4 rounded-lg shadow-lg text-white font-bold p-3" type="submit" onClick={handleSubmit}>GUARDAR</button>
+                                                            <button
+                                                                className="bg-color6 rounded-lg shadow-lg text-white font-bold p-3 mx-5"
+                                                                onClick={e=> {
+                                                                    e.preventDefault();
+                                                                    setEditMode(false);
+                                                                }}
+                                                            >
+                                                                Descartar
+                                                            </button>
+                                                        </>
                                                     ):(
-                                                        <button 
-                                                            className="bg-color4 rounded-lg shadow-lg text-white font-bold p-3"
-                                                            onClick={e => viewPostulations(e)}
-                                                        >Ver Postulaciones</button>
+                                                        <>
+                                                            <button 
+                                                                className="bg-color4 rounded-lg shadow-lg text-white font-bold p-3"
+                                                                onClick={e => viewPostulations(e)}
+                                                            >Ver Postulaciones</button>
+                                                            <button
+                                                                className="bg-color4 rounded-lg shadow-lg text-white font-bold p-3 mx-5"
+                                                                onClick={e=> {
+                                                                    e.preventDefault();
+                                                                    setEditMode(true);
+                                                                    if (states.length === 0) {
+                                                                        // Como es modo edicion o creacion, invocamos a la funcion de estructura de ubicacion
+                                                                        searchUbications();
+                                                                    }
+                                                                }}
+                                                            >
+                                                                Editar
+                                                            </button>
+                                                        </>
                                                     )
                                                 }
                                             </form>

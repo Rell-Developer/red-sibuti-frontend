@@ -14,7 +14,7 @@ const ActiveServiceOffering = ({service}) => {
             className={`
                 bg-white border border-color4 shadow-lg rounded-lg p-5 text-center transition-all transform
                 h-72 col-span-full 
-                ${viewRatings ? `lg:col-span-full row-span-2`: `${viewService ? "lg:col-span-6 cursor-pointer overflow-scroll":"lg:col-span-4 cursor-pointer overflow-scroll row-span-1"}`}
+                ${viewRatings ? `lg:col-span-full row-span-2`: `${viewService ? "lg:col-span-full cursor-pointer overflow-scroll":"lg:col-span-4 cursor-pointer overflow-scroll row-span-1"}`}
             `}
             onClick={() => setViewService(!viewService)}
         >

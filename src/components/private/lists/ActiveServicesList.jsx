@@ -13,7 +13,7 @@ const ActiveServicesList = () => {
         const searchServices = async () => {
             try {
                 // Buscamos las ofertas de oferta de servicios
-                const { data } = await clienteAxios("/get-service-offerings");
+                const { data } = await clienteAxios("/get-active-service-offerings");
                 // console.log(data);
                 setServices(data.result);
                 setLoading(false);

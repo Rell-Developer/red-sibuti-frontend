@@ -26,7 +26,7 @@ const OpenEmploymentsList = () => {
                     user = JSON.parse(user);
                 }
 
-                console.log(user);
+                // console.log(user);
 
                 let {data} = await clienteAxios("/get-open-employments", {
                     headers:{
@@ -57,13 +57,21 @@ const OpenEmploymentsList = () => {
             <div className="w-full col-span-2 flex flex-col" style={{height: "91vh"}}>
                 {/* Buscador */}
                 {/* <div className="w-full">
-                    <div className="w-full mt-5 mx-auto bg-color4 rounded-xl shadow-lg p-5">
+                    <div className="w-full mt-5 mx-auto bg-color4 rounded-xl shadow-lg p-5 grid grid-cols-12 gap-2">
                         <input 
                             type="text" 
                             name="" 
                             id="" 
                             className="p-3 rounded-full w-full font-bold border-2 border-color2" 
                             placeholder="ESCRIBA LO QUE QUIERA BUSCAR"/>
+
+                        <select 
+                            id="state"
+                            name="state" 
+                            className="p-3 rounded-full col-span-4 font-bold border-2 border-color2 bg-white" 
+                        >
+                            <option value="">filtrar por estado</option>
+                        </select>
                     </div>
                 </div> */}
                 {/* Resultados de los empleos*/}

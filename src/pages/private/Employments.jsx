@@ -38,7 +38,7 @@ const Employments = () => {
 
                 <div className="grid grid-cols-12 gap-4 my-5">
                     {
-                        empleos.map(empleo => <EmploymentCardControl employment={empleo}/>)
+                        empleos.map(empleo => <EmploymentCardControl employment={empleo} empleos={empleos} setEmpleos={setEmpleos}/>)
                     }
                 </div>
             </div>

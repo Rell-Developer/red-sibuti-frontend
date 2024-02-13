@@ -153,7 +153,7 @@ const HomeCarousel = () => {
                                             ¿Que esperás para ingresar? {""}
                                         </h2>
                                         <Link 
-                                            href="/iniciar-sesion" 
+                                            to="/iniciar-sesion" 
                                             className="bg-white px-4 py-2 font-bold uppercase text-black rounded w-1/4 text-center"
                                         >
                                             haz clic aquí
