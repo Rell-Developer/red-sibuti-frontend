@@ -40,7 +40,7 @@ const ConfirmAccount = () => {
                             <Alert alerta={alerta}/>
 
                             <Link 
-                                to="/"
+                                to="/iniciar-sesion"
                                 className="
                                     bg-color5 text-white font-bold p-4 uppercase rounded-lg shadow-lg transition-all
                                     hover:bg-color4 hover:shadow-none

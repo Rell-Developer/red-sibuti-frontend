@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import InputForm from './InputForm.jsx';
 import Alert from './Alert.jsx';
 import FooterLink from './FooterLink.jsx';
-import ButtonSubmit from './ButtonSubmit.jsx';
+import ButtonSubmit from './ButtonComponent.jsx';
 import Spinner from './Spinner.jsx';
 
 // Cliente Axios
@@ -37,7 +37,7 @@ const ForgetPassForm = ({title}) => {
             // Creacion de la peticion http
             try {
                 // peticion http de autenticacion
-                const { data } = await clienteAxios.post('/auth', { email });
+                const { data } = await clienteAxios.post('/user/forget-password', { email });
     
                 // Se quita el spinner
                 setLoading(false);
@@ -48,10 +48,10 @@ const ForgetPassForm = ({title}) => {
                     // Y se retorna la asignacion nula de la alerta para que desaparezca
                     return setTimeout(() => setAlerta(null), 5000)
                 }
-    
-                // Se envia al usuario a la pagina principal
-                navigate("/register")
-                console.log(data);
+
+                setAlerta({error:false, message: data.message});
+
+                setTimeout(() => navigate("/"), 10000);
             } catch (error) {
                 console.log(error.message);
             }
@@ -104,7 +104,11 @@ const ForgetPassForm = ({title}) => {
                                 />
                             </div>
                             <div className='w-1/2 mx-auto my-5'>
-                                <ButtonSubmit title={"Enviar"}/>
+                                <ButtonSubmit 
+                                    customClasses={"bg-color3 rounded-lg border-2 border-color4 text-white font-bold w-full my-3 shadow-lg uppercase mx-auto py-2 text-sm"} 
+                                    title={"Enviar"} 
+                                    disabled={`${loading || alerta ? "true":"false"}`}
+                                />
                             </div>
                         </div>
                     </form>

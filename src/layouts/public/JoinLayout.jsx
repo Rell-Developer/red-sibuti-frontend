@@ -7,6 +7,7 @@ import RegisterForm from '../../components/public/RegisterForm.jsx';
 import CoverComponent from '../../components/public/CoverComponent.jsx';
 import ForgetPassForm from '../../components/public/ForgetPassForm.jsx';
 import ConfirmAccount from '../../components/public/ConfirmAccount.jsx';
+import ResetPassword from '../../components/public/ResetPassword.jsx';
 
 // Funcion
 const JoinLayout = ({section, view}) => {
@@ -14,7 +15,7 @@ const JoinLayout = ({section, view}) => {
     return (
         <>
             <main className='flex w-full h-full'>
-                { section === "signin" || section === "forgot-password" ? (
+                { section === "signin" || section === "forgot-password" || section === "reset-password"? (
                         <>
                             <CoverComponent
                                 props={{
@@ -29,7 +30,15 @@ const JoinLayout = ({section, view}) => {
                                     section === "signin" ? (
                                         <LoginForm title={"INICIAR SESION"}/>
                                     ):(
-                                        <ForgetPassForm title={"RECUPERAR CONTRASEÑA"}/>
+                                        <>
+                                            {
+                                                section === "forgot-password" ? (
+                                                    <ForgetPassForm title={"RECUPERAR CONTRASEÑA"}/>
+                                                ):(
+                                                    <ResetPassword title={"RESTABLECER CONTRASEÑA"}/>
+                                                )
+                                            }
+                                        </>
                                     )
                                 }
                             </div>

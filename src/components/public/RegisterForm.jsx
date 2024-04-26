@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import InputForm from './InputForm.jsx';
 import Alert from './Alert.jsx';
 import FooterLink from './FooterLink.jsx';
-import ButtonSubmit from './ButtonSubmit.jsx';
+import ButtonSubmit from './ButtonComponent.jsx';
 import Spinner from './Spinner.jsx';
 
 // Cliente Axios
@@ -178,7 +178,10 @@ const RegisterForm = ({title, view}) => {
                                 {/* <button type="submit" className='bg-color4 w-full text-white font-bold p-2 rounded-lg shadow-lg hover:bg-color3 transition-all uppercase'>
                                     Registrase
                                 </button> */}
-                                <ButtonSubmit title={"Registrarse"}/>
+                                <ButtonSubmit
+                                    customClasses={"bg-color3 rounded-lg border-2 border-color4 text-white font-bold w-full my-3 shadow-lg uppercase mx-auto py-2 text-sm"} 
+                                    title={"Registrarse"}
+                                    />
                             </div>
                         </div>
                     </form>

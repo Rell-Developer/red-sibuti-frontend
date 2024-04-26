@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import InputForm from './InputForm.jsx';
 import Alert from './Alert.jsx';
 import FooterLink from './FooterLink.jsx';
-import ButtonSubmit from './ButtonSubmit.jsx';
+import ButtonSubmit from './ButtonComponent.jsx';
 import Spinner from './Spinner.jsx';
 
 // Cliente Axios
@@ -52,7 +52,7 @@ const LoginForm = ({title}) => {
 
                 sessionStorage.setItem("user", JSON.stringify(data.data));
                 // Se envia al usuario a la pagina principal
-                navigate("/inicio")
+                navigate("/inicio");
             } catch (error) {
                 console.log(error.message);
             }
@@ -119,7 +119,7 @@ const LoginForm = ({title}) => {
                                     />
                                 </div>
                                 <div className='w-1/2 mx-auto my-5'>
-                                    <ButtonSubmit title={"Iniciar"}/>
+                                    <ButtonSubmit customClasses={"bg-color3 rounded-lg border-2 border-color4 text-white font-bold w-full my-3 shadow-lg uppercase mx-auto py-2 text-sm"} title={"Iniciar"}/>
                                 </div>
                             </div>
                         </form>
